@@ -1,0 +1,3 @@
+# MeetingsManager
+
+Nothing atm
