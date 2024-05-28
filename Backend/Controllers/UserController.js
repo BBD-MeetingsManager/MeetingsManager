@@ -8,8 +8,8 @@ router.get('/', (request, response) => {
 
 // Todo, dangerous code, should use token
 // Get user with userID
-router.get('/userID/:userID', async (request, response, next) => {
-    const {userID} = request.params;
+router.get('/userID', async (request, response, next) => {
+    const {userID} = request.query;
     dbContext.query(
         'select * from `User` where userID = ?',
         [userID],
