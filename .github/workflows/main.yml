@@ -21,7 +21,7 @@ jobs:
             ${{ secrets.PKEY }}
 
       - name: set secret permission
-        run: chmod 600 pkey.pem    
+        run: sudo chmod 600 pkey.pem    
 
       - name: test key
         run: |
