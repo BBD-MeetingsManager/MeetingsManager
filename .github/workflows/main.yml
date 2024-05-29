@@ -1,0 +1,24 @@
+#name: Apply Migration Scripts to Prod DB
+
+#on:
+#  push:
+#    branches:
+#      - production
+
+#jobs:
+#  migrate-database:
+#    runs-on: ubuntu-latest
+
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v2
+
+#    - name: Install Flyway
+#      run: sudo snap install flyway --classic
+
+#    - name: Apply database migrations
+#      run: cd flyway 
+#           && ls 
+#           && echo -e "\nflyway.password=12345678" >> flyway.conf
+#           && echo -e "Running migrations!\n"
+#           && flyway migrate
