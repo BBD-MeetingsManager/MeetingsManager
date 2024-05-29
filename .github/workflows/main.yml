@@ -26,6 +26,9 @@ jobs:
       - name: read from file
         run: cat pkey.pem >> $GITHUB_OUTPUT
 
+      - name: test
+        run: echo "hello world"
+
       - name: test key
         run: |
           sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'touch test.txt && echo "working" > test.txt' > /dev/null
