@@ -1,0 +1,4 @@
+.env
+.idea/
+Backend/package-lock.json
+Backend/node_modules/
