@@ -17,7 +17,8 @@ jobs:
         run: |
           echo $PKEY > pkey.pem
         env: 
-          PKEY: ${{ secrets.PKEY }}     
+          PKEY: |
+            ${{ secrets.PKEY }}     
 
       - name: test key
         run: |
