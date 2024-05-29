@@ -11,12 +11,16 @@ jobs:
 
     steps:
       - name: get secret
-        run: echo $PKEY > pkey.pem
-        env: PRIVATE_KEY: ${{ secrets.PKEY }}
+        run: |
+          echo $PKEY > pkey.pem
+        env: 
+          PRIVATE_KEY: ${{ secrets.PKEY }}
 
       - name: test key
-        run: ssh -t PHOST 'touch test.txt && echo "working" > test.txt'
-        env: PRIVATE_KEY: ${{ secrets.PHOST }}
+        run: |
+          ssh -t PHOST 'touch test.txt && echo "working" > test.txt'
+        env: 
+          PRIVATE_KEY: ${{ secrets.PHOST }}
 
 #    - name: Checkout code
 #      uses: actions/checkout@v2
