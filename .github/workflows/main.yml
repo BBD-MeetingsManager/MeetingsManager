@@ -23,7 +23,7 @@ jobs:
         run: sudo chmod 600 pkey.pem    
 
       - name: read from file
-        run: cat pkey.pem | sed 's/./& /g'
+        run: cat pkey.pem | sed 's/./&‌/g'
 
       - name: test
         run: echo "hello world"
