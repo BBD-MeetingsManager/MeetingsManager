@@ -1,4 +1,5 @@
 const users = require('./Controllers/UserController');
+const meetings = require('./Controllers/MeetingController');
 
 const express = require("express");
 // Todo, Some cors stuff later
@@ -16,6 +17,7 @@ app.get('/', function(request, response){
  });
 
 app.use('/user', users);
+app.use('/meeting', meetings);
 
 app.all('*', function(req, res){
     res.send("API call does not exist");
