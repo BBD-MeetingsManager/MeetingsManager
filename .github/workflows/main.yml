@@ -17,13 +17,13 @@ jobs:
         run: |
           echo $PKEY > pkey.pem
         env: 
-          PRIVATE_KEY: ${{ secrets.PKEY }}     
+          PKEY: ${{ secrets.PKEY }}     
 
       - name: test key
         run: |
-          ssh -i pkey1.pem ubuntu@$PHOST 'touch test.txt && echo "working" > test.txt'
+          ssh -i pkey.pem $PHOST 'touch test.txt && echo "working" > test.txt' > /dev/null
         env: 
-          PRIVATE_KEY: ${{ secrets.PHOST }}
+          PHOST: ${{ secrets.PHOST }}
 
 #    - name: Checkout code
 #      uses: actions/checkout@v2
