@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  migrate-database:
+  deploy-to-prod:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,17 +17,11 @@ jobs:
         run: |
           echo $PKEY > pkey.pem
         env: 
-          PRIVATE_KEY: ${{ secrets.PKEY }}
+          PRIVATE_KEY: ${{ secrets.PKEY }}     
 
       - name: test key
         run: |
-          echo $PHOST
-        env: 
-          PRIVATE_KEY: ${{ secrets.PHOST }}        
-
-      - name: test key
-        run: |
-          ssh -i pkey.pem ubuntu@$PHOST 'touch test.txt && echo "working" > test.txt'
+          ssh -i pkey1.pem ubuntu@$PHOST 'touch test.txt && echo "working" > test.txt'
         env: 
           PRIVATE_KEY: ${{ secrets.PHOST }}
 
