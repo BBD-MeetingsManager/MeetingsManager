@@ -24,7 +24,7 @@ jobs:
 
       - name: test key
         run: |
-          ssh -i pkey.pem ubuntu@$PHOST 'touch test.txt && echo "working" > test.txt'
+          ssh -i pkey.pem ubuntu@34.248.128.133 'touch test.txt && echo "working" > test.txt'
         env: 
           PRIVATE_KEY: ${{ secrets.PHOST }}
 
