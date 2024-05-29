@@ -18,7 +18,7 @@ jobs:
 
       - name: test key
         run: |
-          ssh -t PHOST 'touch test.txt && echo "working" > test.txt'
+          ssh -t $PHOST 'touch test.txt && echo "working" > test.txt'
         env: 
           PRIVATE_KEY: ${{ secrets.PHOST }}
 
