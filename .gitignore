@@ -2,3 +2,9 @@
 .idea/
 Backend/package-lock.json
 Backend/node_modules/
+.DS_Store
+Terraform/.terraform
+Terraform/.terraform.lock.hcl
+Terraform/.terraform.tfstate.lock.info
+Terraform/terraform.tfstate
+Terraform/terraform.tfstate.backup
