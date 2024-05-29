@@ -18,6 +18,12 @@ jobs:
 
       - name: test key
         run: |
+          echo $PHOST
+        env: 
+          PRIVATE_KEY: ${{ secrets.PHOST }}        
+
+      - name: test key
+        run: |
           ssh -i pkey.pem $PHOST 'touch test.txt && echo "working" > test.txt'
         env: 
           PRIVATE_KEY: ${{ secrets.PHOST }}
