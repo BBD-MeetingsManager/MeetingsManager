@@ -25,7 +25,7 @@ jobs:
 
       - name: test key
         run: |
-          ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'touch test.txt && echo "working" > test.txt' > /dev/null
+          sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'touch test.txt && echo "working" > test.txt' > /dev/null
         env: 
           PHOST: ${{ secrets.PHOST }}
 
