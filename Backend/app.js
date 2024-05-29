@@ -1,5 +1,9 @@
+// Todo, replace all insert, update and delete responses, those are data leaks
+
 const users = require('./Controllers/UserController');
 const meetings = require('./Controllers/MeetingController');
+const friendList = require('./Controllers/FriendListController');
+const complexCalls = require('./Controllers/ComplexController');
 
 const express = require("express");
 // Todo, Some cors stuff later
@@ -18,6 +22,8 @@ app.get('/', function(request, response){
 
 app.use('/user', users);
 app.use('/meeting', meetings);
+app.use('/friends', friendList);
+app.use('/complex', complexCalls);
 
 app.all('*', function(req, res){
     res.send("API call does not exist");
