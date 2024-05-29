@@ -18,7 +18,10 @@ jobs:
           echo $PKEY > pkey.pem
         env: 
           PKEY: |
-            ${{ secrets.PKEY }}     
+            ${{ secrets.PKEY }}
+
+      - name: set secret permission
+        run: chmod 600 pkey.pem    
 
       - name: test key
         run: |
