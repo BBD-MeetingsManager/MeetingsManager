@@ -6,23 +6,6 @@ router.get('/', (request, response) => {
     response.send('User Homepage');
 });
 
-// Todo, dangerous code, should use token
-// Get user with userID
-router.get('/userID', async (request, response, next) => {
-    const {userID} = request.query;
-    dbContext.query(
-        'select * from `User` where userID = ?',
-        [userID],
-        (error, result) => {
-            if (error) next(error);
-            else {
-                if (result.length === 0) response.send({alert: "No user found"});
-                else response.send(result);
-            }
-        }
-    );
-});
-
 // Todo, also dangerous, should use token
 // Login / Sign Up
 router.post('/login', async (request, response, next) => {
