@@ -74,6 +74,7 @@ router.post('/makeRequest', async (request, response, next) => {
 
 // Todo, also dangerous, use token
 // Todo, out how to send better response to front end without exposing information
+// Accept / reject friend requests
 router.put('/handleRequest', (request, response, next) => {
     const {targetEmail, senderEmail, status} = request.body;
     if (status !== 'accepted' && status !== 'rejected') response.send({alert: "Invalid status. Only \'accepted\' or \'rejected\' are allowed."});
