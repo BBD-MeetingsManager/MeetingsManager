@@ -1,3 +1,5 @@
+// Todo, replace all insert, update and delete responses, those are data leaks
+
 const users = require('./Controllers/UserController');
 const meetings = require('./Controllers/MeetingController');
 const friendList = require('./Controllers/FriendListController');
