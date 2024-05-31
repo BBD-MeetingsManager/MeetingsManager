@@ -2,6 +2,7 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
 import Navbar from './components/Navbar'
 import Landing from './pages/Landing'
+import Redirect from './pages/Redirect'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
 
@@ -15,6 +16,10 @@ function App() {
     {
       path: 'home',
       element: <Home />
+    },
+    {
+      path: '/redirect',
+      element: <Redirect />,
     }
   ])
   const theme = createTheme({
