@@ -4,7 +4,7 @@ import { Box, AppBar, Toolbar, IconButton, Typography, Button } from "@mui/mater
 const Navbar = () => {
     return (
         <Box>
-            <AppBar>
+            <AppBar className="absolute top-0">
                 <Toolbar>
                     <IconButton
                         size="large"

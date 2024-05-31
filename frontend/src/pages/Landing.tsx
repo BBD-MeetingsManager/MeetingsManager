@@ -2,9 +2,9 @@ import LandingIcon from "../components/icons/LandingIcon"
 
 const Landing = () => {
     return (
-        <main className="w-full pt-16 md:h-screen h-full md:bg-gradient-to-r bg-gradient-to-b from-anti-flash-white to-paynes-gray-800">
+        <main className="w-full pt-16 md:pt-0 md:h-screen min-h-screen overflow-clip md:bg-gradient-to-r bg-gradient-to-b from-anti-flash-white to-paynes-gray-800">
             <section className="w-full h-full flex md:flex-row flex-col-reverse">
-                <section className="w-full flex flex-col gap-2 justify-center md:px-16 px-10 py-8">
+                <section className="w-full flex flex-col gap-2 justify-center md:px-32 px-10 py-8">
                     <h2 className="text-5xl">
                         {/* <span className="text-paynes-gray-400">—</span> */}
                         {/* &nbsp; */}
@@ -15,8 +15,7 @@ const Landing = () => {
                 </section>
                 <section className="w-full flex items-center justify-center md:px-0">
                     <LandingIcon
-                        width={400}
-                    // className="h-"
+                        width={360}
                     />
                 </section>
             </section>
