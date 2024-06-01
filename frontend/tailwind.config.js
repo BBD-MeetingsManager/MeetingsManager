@@ -1,0 +1,63 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./src/**/*.{ts,tsx}"],
+  theme: {
+    colors: {
+      transparent: "transparent",
+      "anti-flash-white": {
+        DEFAULT: "#ebebeb",
+        100: "#2f2f2f",
+        200: "#5e5e5e",
+        300: "#8d8d8d",
+        400: "#bcbcbc",
+        500: "#ebebeb",
+        600: "#efefef",
+        700: "#f3f3f3",
+        800: "#f7f7f7",
+        900: "#fbfbfb",
+      },
+      night: {
+        DEFAULT: "#0b090a",
+        100: "#020202",
+        200: "#040404",
+        300: "#070606",
+        400: "#090708",
+        500: "#0b090a",
+        600: "#41353b",
+        700: "#77616c",
+        800: "#a7939d",
+        900: "#d3c9ce",
+      },
+      dark_orange: {
+        DEFAULT: "#ff9233",
+        100: "#3d1d00",
+        200: "#7a3900",
+        300: "#b85600",
+        400: "#f57200",
+        500: "#ff9233",
+        600: "#ffa85c",
+        700: "#ffbe85",
+        800: "#ffd3ad",
+        900: "#ffe9d6",
+      },
+      "paynes-gray": {
+        DEFAULT: "#597788",
+        100: "#12181b",
+        200: "#232f36",
+        300: "#354751",
+        400: "#475f6d",
+        500: "#597788",
+        600: "#7593a5",
+        700: "#97aebb",
+        800: "#bac9d2",
+        900: "#dce4e8",
+      },
+    },
+    extend: {
+      boxShadow: {
+        "bottom-border": "0px 5px 10px -10px #0b090a",
+      },
+    },
+  },
+  plugins: [],
+};

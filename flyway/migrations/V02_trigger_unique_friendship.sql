@@ -10,10 +10,10 @@ BEGIN
     -- Check for the reverse pair
     SELECT COUNT(*) INTO cnt
     FROM FriendList
-    WHERE requestUserID = NEW.followerUserID
-      AND followerUserID = NEW.requestUserID;
+    WHERE targetUserID = NEW.senderUserID
+      AND senderUserID = NEW.targetUserID;
     IF cnt > 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The pair (requestUserID, followerUserID) must be unique in any order';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The pair (targetUserID, senderUserID) must be unique in any order';
     END IF;
 END; //
 
