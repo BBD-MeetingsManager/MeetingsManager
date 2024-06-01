@@ -23,7 +23,7 @@ jobs:
         run: sudo chmod 600 pkey.pem
 
       - name: transfer api
-        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no $PHOST:/Backend /home/ubuntu/
+        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no $PHOST:Backend /home/ubuntu/
         env: 
           PHOST: ${{ secrets.PHOST }}
 
