@@ -3,6 +3,7 @@
 
 const users = require('./Controllers/UserController');
 const meetings = require('./Controllers/MeetingController');
+const meetingMembers = require('./Controllers/MeetingMembersController');
 const friendList = require('./Controllers/FriendListController');
 const complexCalls = require('./Controllers/ComplexController');
 const auth = require('./Controllers/AuthController');
@@ -26,6 +27,7 @@ app.use('/user', users);
 app.use('/meeting', meetings);
 app.use('/friends', friendList);
 app.use('/complex', complexCalls);
+app.use('/meeting-members', meetingMembers);
 
 app.all('*', function(req, res){
     res.send("API call does not exist");
