@@ -71,7 +71,6 @@ export const CalendarComponent = () => {
         fetch(url, options)
             .then(result => result.json()
                 .then(meetings => {
-                    console.log(format(new Date(meetings[0].startTime), 'dd-MM-yyyy'))
                     const calendarMeetings = generateCalendar(today.month(), today.year()).map((dateObject, index) => {
                         const { date, isToday, isCurrentMonth } = dateObject
                         return (
