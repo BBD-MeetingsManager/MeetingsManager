@@ -1,3 +1,4 @@
+const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
@@ -6,11 +7,11 @@ router.get('/', (request, response) => {
     response.send('Meeting Homepage');
 });
 
-// Todo, dangerous code, should use token
 // Todo, add extended functionality that if you send a request and they sent one to you, it must just accept the request.
 // Make follow request
-router.post('/makeRequest', async (request, response, next) => {
-    const {targetEmail, senderEmail} = request.body;
+router.post('/makeRequest', verifyToken, async (request, response, next) => {
+    const {targetEmail} = request.body;
+    const senderEmail = request.user.email;
     dbContext.query(
         `select userID, email from \`User\` where email in (?, ?)`,
         [targetEmail, senderEmail],
@@ -72,11 +73,11 @@ router.post('/makeRequest', async (request, response, next) => {
 });
 
 
-// Todo, also dangerous, use token
 // Todo, out how to send better response to front end without exposing information
 // Accept / reject friend requests
-router.put('/handleRequest', (request, response, next) => {
-    const {targetEmail, senderEmail, status} = request.body;
+router.put('/handleRequest', verifyToken, (request, response, next) => {
+    const {senderEmail, status} = request.body;
+    const targetEmail = request.user.email;
     if (status !== 'accepted' && status !== 'rejected') response.send({alert: "Invalid status. Only \'accepted\' or \'rejected\' are allowed."});
     else {
         dbContext.query(`

@@ -32,7 +32,34 @@ router.get('/getAccessToken', async (request, response, next) => {
     fetch(url.toString(), options)
         .then(result => result.json()
             .then(asJson => response.send(asJson)));
-
 });
+
+// Doesnt work atm
+// Refresh Access token
+// router.get('/refreshAccessToken', async (request, response, next) => {
+//     const {refreshToken} = request.query;
+//
+//     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
+//     const url = new URL(`${hostedUiURL}/oauth2/token`);
+//
+//     const queryParameters = new URLSearchParams();
+//     queryParameters.append("grant_type", "refresh_token");
+//     queryParameters.append("client_id", clientID);
+//     queryParameters.append("refresh_token", refreshToken);
+//
+//     url.search = queryParameters.toString();
+//
+//     const options = {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/x-www-form-urlencoded",
+//             "Authorization": `Basic ${btoa(clientID + ':' + clientSecret)}`,
+//         },
+//     };
+//
+//     fetch(url.toString(), options)
+//         .then(result => result.json()
+//             .then(asJson => response.send(asJson)));
+// });
 
 module.exports = router

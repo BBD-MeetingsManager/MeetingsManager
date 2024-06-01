@@ -1,3 +1,4 @@
+const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
@@ -6,10 +7,10 @@ router.get('/', (request, response) => {
     response.send('Meeting Homepage');
 });
 
-// Todo, dangerous code, should use token
 // Cancel meeting
-router.put('/cancelMeeting', async (request, response, next) => {
-    const {meetingID, email} = request.body;
+router.put('/cancelMeeting', verifyToken, async (request, response, next) => {
+    const {meetingID} = request.body;
+    const email = request.user.email;
     dbContext.query(`
             update Meeting m 
             inner join \`User\` u on u.userID = m.adminUserID

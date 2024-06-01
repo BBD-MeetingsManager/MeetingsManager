@@ -1,3 +1,4 @@
+const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
@@ -6,10 +7,9 @@ router.get('/', (request, response) => {
     response.send('User Homepage');
 });
 
-// Todo, also dangerous, should use token
 // Login / Sign Up
-router.post('/login', async (request, response, next) => {
-    const {email} = request.body;
+router.post('/login', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
     dbContext.query(
         'select * from `User` where email = ?',
         [email],
@@ -33,11 +33,9 @@ router.post('/login', async (request, response, next) => {
 });
 
 // Edit your username
-// Todo, of course, protect me with token
-// Todo, people will change other people's usernames, protect aginst this.
-router.put('/editUsername', async (request, response, next) => {
+router.put('/editUsername', verifyToken, async (request, response, next) => {
     const {username} = request.body;
-    const {email} = request.body;
+    const email = request.user.email;
     dbContext.query(
         'update `User` set username = ? where email = ?',
         [username, email],
