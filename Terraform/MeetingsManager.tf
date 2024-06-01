@@ -123,7 +123,7 @@ resource "aws_db_instance" "db_instance" {
   allocated_storage       = 5
   db_subnet_group_name    = aws_db_subnet_group.database_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.database_security_group.id]
-  db_name                 = "meetingsmanagerdb"
+  db_name                 = "meetingmanager"
   skip_final_snapshot     = true
   publicly_accessible     = true
 

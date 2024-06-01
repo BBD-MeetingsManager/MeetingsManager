@@ -1,6 +1,6 @@
-drop database if exists meetingmanager;
+/*drop database if exists meetingmanager;
 create database meetingmanager;
-use meetingmanager;
+use meetingmanager;*/
 
 drop table if exists MeetingMembers;
 drop table if exists FriendList;
