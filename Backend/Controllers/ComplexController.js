@@ -44,6 +44,7 @@ router.get('/pendingMeetings', verifyToken, async (request, response, next) => {
     dbContext.query(
         `
             select 
+                m.meetingID,
                 m.title,
                 m.description,
                 m.link,

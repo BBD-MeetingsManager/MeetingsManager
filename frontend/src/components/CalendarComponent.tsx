@@ -79,11 +79,13 @@ export const CalendarComponent = () => {
                                     {date.date()}
                                 </p>
                                 <section className="w-9/12 space-y-1">
-                                    {meetings.filter((meeting: UserMeeting) => format(new Date(meeting.startTime), 'dd-MM-yyyy') === format(date['$d'], 'dd-MM-yyyy')).map((meeting: UserMeeting, index: Number) => (
-                                        <p key={`${index}`} className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10" onClick={handleMeetingClickInCalendar}>
-                                            • {meeting.title}
-                                        </p>
-                                    ))}
+                                    {Array.isArray(meetings) && (
+                                        meetings.filter((meeting: UserMeeting) => format(new Date(meeting.startTime), 'dd-MM-yyyy') === format(date['$d'], 'dd-MM-yyyy')).map((meeting: UserMeeting, index: Number) => (
+                                            <p key={`${index}`} className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10" onClick={handleMeetingClickInCalendar}>
+                                                • {meeting.title}
+                                            </p>
+                                        ))
+                                    )}
                                 </section>
 
                             </section>

@@ -1,6 +1,10 @@
 import { CalendarMonth } from "@mui/icons-material"
-import { Box, AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material"
-import React from "react";
+import {Box, AppBar, Toolbar, IconButton, Typography, Button, ListItemText} from "@mui/material"
+import React, {useEffect} from "react";
+import './Navbar.css';
+import MeetingInvite from "./MeetingInvite.tsx";
+import {paths} from "../enums/paths.tsx";
+import {format} from "date-fns";
 
 const Navbar = () => {
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
@@ -36,6 +40,40 @@ const Navbar = () => {
         return;
     };
 
+    const [meetingInvites, setMeetingInvites] = React.useState([]);
+
+    useEffect(() => {
+        const options = {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('id_token')}`,
+            },
+        };
+
+        const url = `${paths.apiUrlLocal}/complex/pendingMeetings`;
+        fetch(url, options)
+            .then(result => result.json()
+                .then(meetings => {
+                    if (!meetings.hasOwnProperty('alert')){
+                        const tmpMeetings = [];
+                        for (const meeting of meetings) {
+                            tmpMeetings.push(
+                                <MeetingInvite
+                                    className="meetingInvite"
+                                    meetingID={meeting.meetingID}
+                                    title={meeting.title}
+                                    description={meeting.description}
+                                    startTime={meeting.startTime}
+                                    endTime={meeting.endTime}
+                                />
+                            )
+                        }
+
+                        setMeetingInvites(tmpMeetings);
+                    }
+                }));
+    }, []);
+
     return (
         <Box>
             <AppBar className="absolute top-0">
@@ -44,14 +82,23 @@ const Navbar = () => {
                         size="large"
                         // edge="end"
                         color="inherit"
-                        sx={{ mr: 2 }}
+                        sx={{mr: 2}}
                         href="/"
                     >
-                        <CalendarMonth />
+                        <CalendarMonth/>
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         Meeting Manager
                     </Typography>
+                    <div className="dropdown">
+                        <button className="dropbtn">Dropdown</button>
+                        <div className="dropdown-content">
+                            {meetingInvites}
+                            {/*<a href="#">Option 1</a>*/}
+                            {/*<a href="#">Option 2</a>*/}
+                            {/*<a href="#">Option 3</a>*/}
+                        </div>
+                    </div>
                     <Button color="inherit" onClick={buttonOnClick}>{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
                 </Toolbar>
             </AppBar>

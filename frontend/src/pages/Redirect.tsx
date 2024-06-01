@@ -1,3 +1,5 @@
+import {paths} from "../enums/paths.tsx";
+
 const Redirect = () => {
     const homePageURL = 'http://localhost:5173';
 
@@ -12,7 +14,23 @@ const Redirect = () => {
                     .then(((response) => {
                         localStorage.setItem('id_token', response.id_token);
                         localStorage.setItem('refresh_token', response.refresh_token);
-                        window.location.href = homePageURL;
+
+                        // Register user on DB
+                        const url = `${paths.apiUrlLocal}/user/login`;
+                        const options = {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${response.id_token}`,
+                            }
+                        };
+
+                        fetch(url, options)
+                            .then(result => result.json()
+                                .then(asJson => {
+                                    console.log("db registration response", asJson);
+                                    window.location.href = homePageURL;
+                                }));
                     }))
             });
     }
