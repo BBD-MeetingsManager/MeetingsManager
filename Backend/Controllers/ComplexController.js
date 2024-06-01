@@ -1,13 +1,13 @@
 const { parse, isValid } = require('date-fns');
 
+const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
 
-// Todo, dangerous code, should use token
 // Get meetings for user.
-router.get('/getMeetings', async (request, response, next) => {
-    const {userID} = request.query;
+router.get('/getMeetings', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
     dbContext.query(
         `
             select
@@ -23,9 +23,9 @@ router.get('/getMeetings', async (request, response, next) => {
                      inner join \`User\` as u on u.userID = mm.userID
             where
               mm.status = 'accepted' and
-              u.userID = ?
+              u.email = ?
         `,
-        [userID],
+        [email],
         (error, result) => {
             if (error) next(error);
             else {
@@ -36,10 +36,9 @@ router.get('/getMeetings', async (request, response, next) => {
     );
 });
 
-// Todo, dangerous code, should use token
 // Get meeting invites for user.
-router.get('/pendingMeetings', async (request, response, next) => {
-    const {userID} = request.query;
+router.get('/pendingMeetings', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
     dbContext.query(
         `
             select 
@@ -55,9 +54,9 @@ router.get('/pendingMeetings', async (request, response, next) => {
             where 
                 1 = 1
                 and mm.status = 'pending'
-                and u.userID = ?;
+                and u.email = ?;
         `,
-        [userID],
+        [email],
         (error, result) => {
             if (error) next(error);
             else {
@@ -68,10 +67,11 @@ router.get('/pendingMeetings', async (request, response, next) => {
     );
 });
 
-// Todo, unsafe, anyone can be the admin user.
 // Create Meeting
-router.post('/createMeeting', async (request, response, next) => {
-    const {title, description, link, startTime, endTime, members, adminUserID} = request.body;
+router.post('/createMeeting', verifyToken, async (request, response, next) => {
+    const {title, description, link, startTime, endTime, members} = request.body;
+    const email = request.user.email;
+    members.push(email);
 
     // Validating Dates
     const formattedStartTime = parse(startTime, 'yyyy-MM-dd HH:mm:ss', new Date());
@@ -82,61 +82,72 @@ router.post('/createMeeting', async (request, response, next) => {
         else response.send({alert: "Invalid end time"});
     }
     else {
-        const meetingUUID = crypto.randomUUID();
-        dbContext.query(
-            `
-                insert into 
-                    Meeting(meetingID, adminUserID, title, description, link, startTime, endTime) 
-                values
-                    ('${meetingUUID}', ?, ?, ?, ?, ?, ?)
+        dbContext.query(`
+                select userID from \`User\` where email = ?;
             `,
-            [adminUserID, title, description, link, startTime, endTime],
+            [email],
             (error, result) => {
-                if (error) next(error)
+                if (error) next(error);
                 else {
-                    // Todo, check if this is vulnerable to sql injections
-                    // Inserting Relationships
-                    const formattedEmails = `(${members.map(memberEmail => `'${memberEmail}'`).join(', ')})`;
-                    dbContext.query(`
-                            select userID from \`User\` where userID in ${formattedEmails};
+                    const adminUserID = result[0].userID;
+                    const meetingUUID = crypto.randomUUID();
+                    dbContext.query(
+                        `
+                            insert into 
+                                Meeting(meetingID, adminUserID, title, description, link, startTime, endTime) 
+                            values
+                                ('${meetingUUID}', ?, ?, ?, ?, ?, ?)
                         `,
+                        [adminUserID, title, description, link, startTime, endTime],
                         (error, result) => {
-                        if (error) next(error);
-                            // Realistically, should never happen, because we check if there are emails.
-                            if (error) next(error);
+                            if (error) next(error)
                             else {
-                                const valuesArray = [];
-                                for (const user of result){
-                                    const userID = user.userID;
-                                    if (userID === adminUserID) valuesArray.push(`('${userID}', '${meetingUUID}', 'accepted')`);
-                                    else valuesArray.push(`('${userID}', '${meetingUUID}', 'pending')`);
-                                    valuesArray.push(',');
-                                }
-                                valuesArray.pop();
-                                valuesArray.push(';');
-
-                                dbContext.query(
-                                    `
-                                        insert into 
-                                            MeetingMembers(userID, meetingID, status) 
-                                        values 
-                                            ${valuesArray.join('')}
+                                // Todo, check if this is vulnerable to sql injections
+                                // Inserting Relationships
+                                const formattedEmails = `(${members.map(memberEmail => `'${memberEmail}'`).join(', ')})`;
+                                dbContext.query(`
+                                        select userID from \`User\` where email in ${formattedEmails};
                                     `,
                                     (error, result) => {
-                                        if (error) {
-                                            // Revert insert into meeting table
-                                            dbContext.query(`
-                                                delete from Meeting where meetingID = ?
+                                        if (error) next(error);
+                                        // Realistically, should never happen, because we check if there are emails.
+                                        if (error) next(error);
+                                        else {
+                                            const valuesArray = [];
+                                            for (const user of result){
+                                                const userID = user.userID;
+                                                if (userID === adminUserID) valuesArray.push(`('${userID}', '${meetingUUID}', 'accepted')`);
+                                                else valuesArray.push(`('${userID}', '${meetingUUID}', 'pending')`);
+                                                valuesArray.push(',');
+                                            }
+                                            valuesArray.pop();
+                                            valuesArray.push(';');
+
+                                            dbContext.query(
+                                                `
+                                                    insert into 
+                                                        MeetingMembers(userID, meetingID, status) 
+                                                    values 
+                                                        ${valuesArray.join('')}
                                                 `,
-                                                [meetingUUID],
                                                 (error, result) => {
-                                                    // Again, should never happen
-                                                    if (error) next(error);
-                                                    else response.send({error: "Error creating user relationships."});
+                                                    if (error) {
+                                                        // Revert insert into meeting table
+                                                        dbContext.query(`
+                                                                delete from Meeting where meetingID = ?
+                                                            `,
+                                                            [meetingUUID],
+                                                            (error, result) => {
+                                                                // Again, should never happen
+                                                                if (error) next(error);
+                                                                else response.send({error: "Error creating user relationships."});
+                                                            }
+                                                        )
+                                                    }
+                                                    else response.send(result);
                                                 }
                                             )
                                         }
-                                        else response.send(result);
                                     }
                                 )
                             }
@@ -148,10 +159,9 @@ router.post('/createMeeting', async (request, response, next) => {
     }
 });
 
-// Todo, not secure, use token
 // Get users friends
-router.get('/getFriendsForUser', async (request, response, next) => {
-    const {email} = request.query;
+router.get('/getFriendsForUser', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
     dbContext.query(`
             select 
                 t.email as 'targetEmail', 
@@ -184,10 +194,9 @@ router.get('/getFriendsForUser', async (request, response, next) => {
     )
 });
 
-// Todo, not secure, use token
 // Get user's friend requests
-router.get('/getFriendRequests', async (request, response, next) => {
-    const {email} = request.query;
+router.get('/getFriendRequests', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
     dbContext.query(`
             select 
                 s.email as 'senderEmail',

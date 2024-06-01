@@ -11,6 +11,7 @@ const Redirect = () => {
                 result.json()
                     .then(((response) => {
                         localStorage.setItem('id_token', response.id_token);
+                        localStorage.setItem('refresh_token', response.refresh_token);
                         window.location.href = homePageURL;
                     }))
             });
