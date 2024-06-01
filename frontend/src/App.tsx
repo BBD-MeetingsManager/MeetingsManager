@@ -3,6 +3,7 @@ import './App.css'
 import Navbar from './components/Navbar'
 import Landing from './pages/Landing'
 import Redirect from './pages/Redirect'
+import SignOut from './pages/SignOut'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
 
@@ -20,6 +21,10 @@ function App() {
     {
       path: '/redirect',
       element: <Redirect />,
+    },
+    {
+      path: '/sign-out',
+      element: <SignOut />,
     }
   ])
   const theme = createTheme({
