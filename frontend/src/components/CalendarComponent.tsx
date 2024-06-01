@@ -3,7 +3,7 @@ import { useEffect, useState, MouseEvent } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { AddBox, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { generateCalendar } from "../utils/calendar";
-import { Box, Button, FormGroup, Modal, Stack, Tab, TextField } from "@mui/material";
+import {Box, Button, FormGroup, ListItemText, Modal, Stack, Tab, TextField, Typography} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider, TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
@@ -11,7 +11,9 @@ import { useFormik } from "formik";
 import * as yup from 'yup';
 import 'dayjs/locale/en-gb'
 import { TabContext, TabList } from "@mui/lab";
-import { dummyMeetings } from "../dummyData";
+import {paths} from "../enums/paths.tsx";
+import {format} from "date-fns";
+import {UserMeeting} from "../enums/types.tsx";
 
 const monthsMap = new Map<number, string>([
     [0, 'JANUARY'],
@@ -52,6 +54,43 @@ export const CalendarComponent = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [tabValue, setTabValue] = useState<string>('3');
 
+    const [upcomingMeetings, setUpcomingMeetings] = useState([]);
+
+    useEffect(() => {
+        const options = {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('id_token')}`,
+            },
+        };
+
+        const url = `${paths.apiUrlLocal}/complex/getMeetings`;
+        fetch(url, options)
+            .then(result => result.json()
+                .then(meetings => {
+                    console.log(format(new Date(meetings[0].startTime), 'dd-MM-yyyy'))
+                    const calendarMeetings = generateCalendar(today.month(), today.year()).map((dateObject, index) => {
+                        const { date, isToday, isCurrentMonth } = dateObject
+                        return (
+                            <section key={index} className={`${isCurrentMonth ? '' : 'text-paynes-gray-800'} ${isToday ? 'bg-dark_orange text-anti-flash-white-800' : ''} ${selected?.toDate().toDateString() === date.toDate().toDateString() ? 'bg-paynes-gray-900 text-night' : ''} h-16 text-sm flex flex-row border border-paynes-gray-900 px-2 py-1 cursor-pointer hover:bg-paynes-gray-900 hover:text-night transition-all`} onClick={() => { handleCardClick(date) }}>
+                                <p className="h-full w-3/12">
+                                    {date.date()}
+                                </p>
+                                <section className="w-9/12 space-y-1">
+                                    {meetings.filter((meeting: UserMeeting) => format(new Date(meeting.startTime), 'dd-MM-yyyy') === format(date['$d'], 'dd-MM-yyyy')).map((meeting: UserMeeting, index: Number) => (
+                                        <p key={`${index}`} className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10" onClick={handleMeetingClickInCalendar}>
+                                            • {meeting.title}
+                                        </p>
+                                    ))}
+                                </section>
+
+                            </section>
+                        )
+                    });
+
+                    setUpcomingMeetings(calendarMeetings);
+                }));
+    }, []);
 
     const handleCardClick = (date: Dayjs) => {
         setSelected(date);
@@ -65,11 +104,10 @@ export const CalendarComponent = () => {
         setTabValue(newTabValue);
     };
 
-    const handleMeetingClickInCalendar = (e: MouseEvent<HTMLElement>) => {
-        if (e && e.stopPropagation) e.stopPropagation();
+    const handleMeetingClickInCalendar = (event: MouseEvent<HTMLElement>) => {
+        if (event && event.stopPropagation) event.stopPropagation();
 
         console.log('go to the meeting');
-
     }
 
     const formik = useFormik<FormDataType>({
@@ -128,25 +166,7 @@ export const CalendarComponent = () => {
                 ))}
             </section>
             <section className="w-full grid grid-cols-7  shadow-xl">
-                {generateCalendar(today.month(), today.year()).map((dateObject, index) => {
-                    const { date, isToday, isCurrentMonth } = dateObject
-                    return (
-                        <section key={index} className={`${isCurrentMonth ? '' : 'text-paynes-gray-800'} ${isToday ? 'bg-dark_orange text-anti-flash-white-800' : ''} ${selected?.toDate().toDateString() === date.toDate().toDateString() ? 'bg-paynes-gray-900 text-night' : ''} h-16 text-sm flex flex-row border border-paynes-gray-900 px-2 py-1 cursor-pointer hover:bg-paynes-gray-900 hover:text-night transition-all`} onClick={() => { handleCardClick(date) }}>
-                            <p className="h-full w-3/12">
-                                {date.date()}
-                            </p>
-                            <section className="w-9/12 space-y-1">
-                                {dummyMeetings.filter((meeting) => meeting.date === date.format('DD-MM-YYYY')).map((meeting, index) => (
-                                    <p key={index} className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10" onClick={handleMeetingClickInCalendar}>
-                                        • {meeting.title}
-                                    </p>
-                                ))}
-
-                            </section>
-
-                        </section>
-                    )
-                })}
+                {upcomingMeetings}
             </section>
 
             <Modal open={modalOpen} onClose={handleClose} disableAutoFocus className="absolute flex items-center justify-center">
