@@ -19,33 +19,35 @@ const Home = () => {
         fetch(url, options)
             .then(result => result.json()
                 .then(meetings => {
-                    const tmpMeetings = [];
-                    for (const meeting of meetings) {
-                        const formattedDate = format(new Date(meeting.startTime), 'yyyy-MM-dd');
-                        tmpMeetings.push(
-                            <ListItemText
-                                key={`upcoming-meeting-${meeting.meetingID}`}
-                                primary={`${meeting.title}`}
-                                secondary={
-                                    <>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {formattedDate.toString()}
-                                        </Typography>
-                                        {/*Todo, there is proper CSS to do this ellipsis*/}
-                                        {` — ${meeting.description || ''} ...`}
-                                    </>
-                                }
-                                className="bg-paynes-gray-700/50 rounded-md p-4 shadow-md"
-                            />
-                        )
-                    }
+                    if (!meetings.hasOwnProperty('alert')){
+                        const tmpMeetings = [];
+                        for (const meeting of meetings) {
+                            const formattedDate = format(new Date(meeting.startTime), 'yyyy-MM-dd');
+                            tmpMeetings.push(
+                                <ListItemText
+                                    key={`upcoming-meeting-${meeting.meetingID}`}
+                                    primary={`${meeting.title}`}
+                                    secondary={
+                                        <>
+                                            <Typography
+                                                sx={{ display: 'inline' }}
+                                                component="span"
+                                                variant="body2"
+                                                color="text.primary"
+                                            >
+                                                {formattedDate.toString()}
+                                            </Typography>
+                                            {/*Todo, there is proper CSS to do this ellipsis*/}
+                                            {` — ${meeting.description || ''} ...`}
+                                        </>
+                                    }
+                                    className="bg-paynes-gray-700/50 rounded-md p-4 shadow-md"
+                                />
+                            )
+                        }
 
-                    setUpcomingMeetings(tmpMeetings);
+                        setUpcomingMeetings(tmpMeetings);
+                    }
                 }));
     }, []);
 
