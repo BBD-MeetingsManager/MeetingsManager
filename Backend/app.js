@@ -1,17 +1,18 @@
 // Todo, replace all insert, update and delete responses, those are data leaks
+// Todo, improve the cors, it just accepts anything
 
 const users = require('./Controllers/UserController');
 const meetings = require('./Controllers/MeetingController');
 const friendList = require('./Controllers/FriendListController');
 const complexCalls = require('./Controllers/ComplexController');
+const auth = require('./Controllers/AuthController');
 
 const express = require("express");
-// Todo, Some cors stuff later
-// const cors = require('cors');
+const cors = require('cors');
 const app = express();
 
 // Todo, Some cors stuff later
-// app.use(cors());
+app.use(cors());
 
 // This allows us to read the request body as JSON
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get('/', function(request, response){
     response.send("Hello world!");
  });
 
+app.use('/auth', auth);
 app.use('/user', users);
 app.use('/meeting', meetings);
 app.use('/friends', friendList);
