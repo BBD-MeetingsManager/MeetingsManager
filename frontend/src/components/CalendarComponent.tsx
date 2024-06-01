@@ -1,5 +1,5 @@
 
-import { useEffect, useState, MouseEvent } from "react";
+import React, { useEffect, useState, MouseEvent } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { AddBox, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { generateCalendar } from "../utils/calendar";
@@ -7,7 +7,7 @@ import {Box, Button, FormGroup, ListItemText, Modal, Stack, Tab, TextField, Typo
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider, TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { useFormik } from "formik";
+import {Field, FieldArray, Formik, useFormik} from "formik";
 import * as yup from 'yup';
 import 'dayjs/locale/en-gb'
 import { TabContext, TabList } from "@mui/lab";
@@ -33,7 +33,8 @@ const monthsMap = new Map<number, string>([
 type FormDataType = {
     title: string;
     description: string;
-    guests: string;
+    link: string;
+    members: [string];
     date: Dayjs;
     from: Dayjs;
     to: Dayjs;
@@ -42,7 +43,9 @@ type FormDataType = {
 const validationSchema = yup.object({
     title: yup.string().max(50).required('This field is required'),
     description: yup.string().max(500).required('This field is required'),
-    guests: yup.string().max(50).email('Enter the email of the guest').required('This field is required')
+    link: yup.string().max(500).required('This field is required'),
+    // Todo, add this validation back
+    // members: yup.string().max(50).email('Enter the email of the guest').required('This field is required')
 })
 
 export const CalendarComponent = () => {
@@ -92,6 +95,13 @@ export const CalendarComponent = () => {
                 }));
     }, []);
 
+    const mergeDateTime = (date: Dayjs, time: Dayjs) => {
+        const [year, month, day] = format(new Date(date['$d']), 'yyyy-MM-dd').toString().split('-').map(numStr => parseInt(numStr, 10));
+        const [hours, minutes, seconds] = format(new Date(time['$d']), 'HH:mm:ss').toString().split(':').map(numStr => parseInt(numStr, 10));
+
+        return format(new Date(year, month - 1, day, hours, minutes, seconds).toString(), 'yyyy-MM-dd HH:mm:ss');
+    }
+
     const handleCardClick = (date: Dayjs) => {
         setSelected(date);
         setModalOpen(true);
@@ -114,15 +124,40 @@ export const CalendarComponent = () => {
         initialValues: {
             title: '',
             description: '',
-            guests: '',
+            link: '',
+            members: [''],
             date: selected!,
             from: dayjs(),
             to: dayjs().add(1, 'hour'),
         },
         validationSchema: validationSchema,
         onSubmit: (values: any) => {
-            console.log(JSON.stringify(values, null, 2));
-            alert(JSON.stringify(values, null, 2));
+            values.members = values.members.filter(guest => guest !== '');
+
+            const url = `${paths.apiUrlLocal}/complex/createMeeting`
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('id_token')}`,
+                },
+                body: JSON.stringify({
+                    title: values.title,
+                    description: values.description,
+                    link: values.link,
+                    startTime: mergeDateTime(values.date, values.from),
+                    endTime: mergeDateTime(values.date, values.to),
+                    members: values.members
+                }).toString()
+            };
+
+            fetch(url.toString(), options)
+                .then(result => result.json()
+                    .then(asJson => {
+                        console.log("response", asJson);
+                        formik.resetForm()
+                        setModalOpen(false)
+                    }));
         },
     },);
 
@@ -177,10 +212,51 @@ export const CalendarComponent = () => {
                             <Stack direction={'column'} className="flex flex-col gap-4 p-8">
                                 <TextField label='Title' name="title" value={formik.values.title} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.title && Boolean(formik.errors.title)} helperText={formik.touched.title && formik.errors.title} required />
                                 <TextField label='Description' name="description" value={formik.values.description} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.description && Boolean(formik.errors.description)} helperText={formik.touched.description && formik.errors.description} required />
-                                <TextField label='Guests' name="guests" value={formik.values.guests} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.guests && Boolean(formik.errors.guests)} helperText={formik.touched.guests && formik.errors.guests} required />
-                                <DatePicker label='Date' name="date" value={formik.values.date ? formik.values.date : dayjs()} onChange={(value) => formik.setFieldValue("date", value, true)} />
+                                <TextField label='Link' name="link" value={formik.values.link} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.link && Boolean(formik.errors.link)} helperText={formik.touched.link && formik.errors.link} required />
 
-                                <TimePicker label='From' name="from" value={formik.values.from} onChange={formik.handleChange} timezone={"system"} viewRenderers={{
+                                <Formik initialValues={formik.initialValues}>
+                                    {({ values }) => (
+                                        <FieldArray name="members" value={formik.values.members}>
+                                            {({ push, remove }) => (
+                                                <React.Fragment>
+                                                    {values.members.map((guest, index) => (
+                                                        <div key={`guest-${index}`}>
+                                                            <div key={index}>
+                                                                <Field
+                                                                    name={`members.${index}`}
+                                                                    placeholder="Enter guest email"
+                                                                    type="email" // Set type as email for email validation
+                                                                />
+                                                                <Button type="button"
+                                                                        onClick={() => {
+                                                                                formik.values.members.splice(index)
+                                                                                remove(index)
+                                                                        }}>
+                                                                    Remove
+                                                                </Button>
+                                                            </div>
+
+                                                            <Button type="button" onClick={
+                                                                () => {
+                                                                    formik.values.members.push(guest);
+                                                                    push('');
+                                                                }}>
+                                                                    Add Guest
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </React.Fragment>
+                                            )}
+                                        </FieldArray>
+                                    )}
+                                </Formik>
+
+                                <DatePicker label='Date' name="date"
+                                            value={formik.values.date ? formik.values.date : dayjs()}
+                                            onChange={(value) => formik.setFieldValue("date", value, true)}/>
+
+                                <TimePicker label='From' name="from" value={formik.values.from}
+                                            onChange={formik.handleChange} timezone={"system"} viewRenderers={{
                                     hours: renderTimeViewClock,
                                     minutes: renderTimeViewClock,
                                 }} />
