@@ -1,12 +1,22 @@
+import {useNavigate} from "react-router-dom";
+import React from "react";
+import {paths} from "../enums/paths.tsx";
+
+
 const SignOut = () => {
-    const homePageURL = 'http://localhost:5173';
+    const navigate = useNavigate();
 
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('refresh_token');
+    React.useEffect(
+        () => {
+            localStorage.removeItem('id_token');
+            localStorage.removeItem('refresh_token');
 
-    window.location.href = homePageURL;
+            navigate(paths.landingPage);
+        },
+        [navigate]
+    );
 
-    return;
+    return null;
 }
 
 export default SignOut
