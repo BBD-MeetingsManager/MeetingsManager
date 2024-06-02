@@ -5,6 +5,7 @@ import './Navbar.css';
 import MeetingInvite from "./MeetingInvite.tsx";
 import {paths} from "../enums/paths.tsx";
 import NavbarUser from "./NavbarUser.tsx";
+import NavbarSocial from "./NavbarSocial.tsx";
 
 const Navbar = () => {
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
@@ -91,7 +92,8 @@ const Navbar = () => {
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         Meeting Manager
                     </Typography>
-                    <NavbarUser />
+                    <NavbarUser/>
+                    <NavbarSocial/>
                     <div className="dropdown">
                         <button className="dropbtn">Dropdown</button>
                         <div className="dropdown-content">
@@ -102,7 +104,7 @@ const Navbar = () => {
                 </Toolbar>
             </AppBar>
         </Box>
-    )
+)
 }
 
 export default Navbar
