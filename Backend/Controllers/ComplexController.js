@@ -230,4 +230,49 @@ router.get('/getFriendRequests', verifyToken, async (request, response, next) =>
     )
 });
 
+router.get('/getMeetingDetails', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
+    const {meetingID} = request.query;
+
+    dbContext.query(`
+                with MeetingDetails as (
+                    select 
+                        m.meetingID,
+                        m.title,
+                        m.description,
+                        m.link,
+                        m.startTime,
+                        m.endTime,
+                        m.isCancelled,
+                        umm.email,
+                        umm.username,
+                        case
+                            when m.adminUserID = umm.userID then true
+                            else false
+                        end as isAdmin
+                    from Meeting as m
+                        inner join \`User\` as u on m.adminUserID = u.userID
+                        inner join MeetingMembers as mm on m.meetingID = mm.meetingID
+                        inner join \`User\` as umm on umm.userID = mm.userID
+                    where m.meetingID = ?
+                )
+                select * from MeetingDetails
+                where 
+                    exists (
+                        select 1
+                        from MeetingDetails as md
+                        where md.email = ?
+                    );
+        `,
+        [meetingID, email],
+        (error, result) => {
+            if (error) next(error);
+            else {
+                if (result.length === 0) response.send({alert: "This user  is not in this meeting."});
+                else response.send(result);
+            }
+        }
+    )
+})
+
 module.exports = router
