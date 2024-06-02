@@ -44,6 +44,10 @@ const Navbar = () => {
     const [meetingInvites, setMeetingInvites] = React.useState<JSX.Element[]>([]);
 
     useEffect(() => {
+        if (!isLoggedIn){
+            return;
+        }
+        
         const options = {
             method: "GET",
             headers: {
@@ -91,14 +95,18 @@ const Navbar = () => {
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         Meeting Manager
                     </Typography>
-                    <NavbarUser/>
-                    <NavbarSocial/>
-                    <div className="dropdown">
-                        <button className="dropbtn">Dropdown</button>
-                        <div className="dropdown-content">
-                            {meetingInvites}
-                        </div>
-                    </div>
+                    {isLoggedIn && (
+                        <React.Fragment>
+                            <NavbarUser/>
+                            <NavbarSocial/>
+                            <div className="dropdown">
+                                <button className="dropbtn">Dropdown</button>
+                                <div className="dropdown-content">
+                                    {meetingInvites}
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    )}
                     <Button color="inherit" onClick={buttonOnClick}>{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
                 </Toolbar>
             </AppBar>
