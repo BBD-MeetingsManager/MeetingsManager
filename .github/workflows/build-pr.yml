@@ -1,9 +1,7 @@
-name: Build Backend
+name: Build
 
 on:
   pull_request:
-    paths:
-      - 'Backend/**'
 
 jobs:
   build:
@@ -17,11 +15,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          
+
+      - name: Install yarn
+        working-directory: ./frontend
+        run: npm install -g yarn
+        
       - name: Install dependecies
-        working-directory: ./Backend
-        run: npm i
+        working-directory: ./frontend
+        run: yarn
 
       - name: Build
-        working-directory: ./Backend
-        run: npm run build
+        working-directory: ./frontend
+        run: yarn build
