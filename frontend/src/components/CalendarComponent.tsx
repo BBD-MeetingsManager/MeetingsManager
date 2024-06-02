@@ -204,6 +204,7 @@ export const CalendarComponent = () => {
         formik.setFieldValue('date', selected, true)
     }, [selected])
 
+    // @ts-ignore
     return (
         <article>
             <section className="flex justify-between items-center p-4 text-sm font-thin border border-paynes-gray-900">
@@ -255,6 +256,7 @@ export const CalendarComponent = () => {
 
                                 <Formik initialValues={formik.initialValues} onSubmit={() => {}}>
                                     {({ values }) => (
+                                        // @ts-ignore
                                         <FieldArray name="members" value={formik.values.members}>
                                             {({ push, remove }) => (
                                                 <React.Fragment>
