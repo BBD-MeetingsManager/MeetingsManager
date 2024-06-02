@@ -13,9 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: testt
-        run: ls
-
       - name: get secret
         run: echo "$PKEY" > pkey.pem
         env: 
@@ -25,25 +22,12 @@ jobs:
       - name: set secret permission
         run: sudo chmod 600 pkey.pem
 
+      - name: create dir for backend
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'rm -f -r Backend && mkdir Backend'
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
       - name: transfer api
-        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no Backend/* $PHOST:/home/ubuntu/Backend
+        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r Backend/* $PHOST:/home/ubuntu/Backend
         env: 
           PHOST: ${{ secrets.PHOST }}
-
-      - name: test key
-        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'touch test.txt && echo "working123" > test.txt'
-        env: 
-          PHOST: ${{ secrets.PHOST }}
-
-#    - name: Checkout code
-#      uses: actions/checkout@v2
-
-#    - name: Install Flyway
-#      run: sudo snap install flyway --classic
-
-#    - name: Apply database migrations
-#      run: cd flyway 
-#           && ls 
-#           && echo -e "\nflyway.password=12345678" >> flyway.conf
-#           && echo -e "Running migrations!\n"
-#           && flyway migrate
