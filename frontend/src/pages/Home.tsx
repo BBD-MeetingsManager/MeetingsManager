@@ -3,11 +3,26 @@ import { CalendarComponent } from "../components/CalendarComponent"
 import { paths } from "../enums/paths"
 import { format } from 'date-fns';
 import {useEffect, useState} from "react";
+import { useNavigate } from 'react-router-dom';
+import Navbar from "../components/Navbar.tsx";
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!localStorage.getItem("id_token")) {
+            navigate(paths.landingPage);
+            return;
+        }
+    }, [navigate]);
+
     const [upcomingMeetings, setUpcomingMeetings] = useState([]);
 
     useEffect(() => {
+        if (!localStorage.getItem('id_token')){
+            return;
+        }
+
         const options = {
             method: "GET",
             headers: {
@@ -52,19 +67,22 @@ const Home = () => {
     }, []);
 
     return (
-        <main className="w-full h-screen pt-16 bg-anti-flash-white">
-            <section className="w-full grid grid-cols-2 gap-4 p-8">
-                <section className="w-10/12 h-full p-4 bg-paynes-gray-700/30 rounded-xl shadow-xl">
-                    <h6 className="text-2xl">Upcoming meetings</h6>
-                    <List className="gap-2">
-                        {upcomingMeetings}
-                    </List>
+        <div>
+            <Navbar/>
+            <main className="w-full h-screen pt-16 bg-anti-flash-white">
+                <section className="w-full grid grid-cols-2 gap-4 p-8">
+                    <section className="w-10/12 h-full p-4 bg-paynes-gray-700/30 rounded-xl shadow-xl">
+                        <h6 className="text-2xl">Upcoming meetings</h6>
+                        <List className="gap-2">
+                            {upcomingMeetings}
+                        </List>
+                    </section>
+                    <section className="w-full">
+                        <CalendarComponent/>
+                    </section>
                 </section>
-                <section className="w-full">
-                    <CalendarComponent />
-                </section>
-            </section>
-        </main>
+            </main>
+        </div>
     )
 }
 
