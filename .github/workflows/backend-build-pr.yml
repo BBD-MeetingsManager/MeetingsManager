@@ -1,9 +1,9 @@
-name: Build
+name: Build Backend
 
 on:
   pull_request:
     paths:
-      - "Backend/**"
+      - 'Backend/**'
 
 jobs:
   build:
@@ -12,12 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Use Node.js
+      - name: Use node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
           
-      - name: Install dependacies & build
+      - name: Install dependecies & build
       - working-directory: ./Backend
       - run: npm i
       - run: npm run build
