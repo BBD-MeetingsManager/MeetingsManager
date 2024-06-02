@@ -71,7 +71,7 @@ const NavbarSocial = () => {
                 }));
     }
 
-    const [friendInvites, setFriendInvites] = useState([]);
+    const [friendInvites, setFriendInvites] = useState<JSX.Element[]>([]);
 
     React.useEffect(
         () => {

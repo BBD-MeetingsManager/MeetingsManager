@@ -16,7 +16,7 @@ const Home = () => {
         }
     }, [navigate]);
 
-    const [upcomingMeetings, setUpcomingMeetings] = useState([]);
+    const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
         if (!localStorage.getItem('id_token')){

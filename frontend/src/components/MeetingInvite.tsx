@@ -1,10 +1,11 @@
 // Todo, styling please
 
 import {paths} from "../enums/paths.tsx";
+import {MeetingInviteType} from "../enums/types.tsx";
 
-const MeetingInvite = (props) => {
+const MeetingInvite = (props: MeetingInviteType) => {
     // console.log("my props", pe)
-    const handleMeeting = (isRejected) => {
+    const handleMeeting = (isRejected: boolean) => {
         const url = `${paths.apiUrlLocal}/meeting-members/handleRequest`
         const options = {
             method: "PUT",

@@ -1,6 +1,6 @@
 import { CalendarMonth } from "@mui/icons-material"
 import {Box, AppBar, Toolbar, IconButton, Typography, Button} from "@mui/material"
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import './Navbar.css';
 import MeetingInvite from "./MeetingInvite.tsx";
 import {paths} from "../enums/paths.tsx";
@@ -41,7 +41,7 @@ const Navbar = () => {
         return;
     };
 
-    const [meetingInvites, setMeetingInvites] = React.useState([]);
+    const [meetingInvites, setMeetingInvites] = React.useState<JSX.Element[]>([]);
 
     useEffect(() => {
         const options = {
@@ -60,7 +60,6 @@ const Navbar = () => {
                         for (const meeting of meetings) {
                             tmpMeetings.push(
                                 <MeetingInvite
-                                    className="meetingInvite"
                                     meetingID={meeting.meetingID}
                                     title={meeting.title}
                                     description={meeting.description}
