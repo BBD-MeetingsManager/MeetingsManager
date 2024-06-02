@@ -38,6 +38,6 @@ jobs:
           PHOST: ${{ secrets.PHOST }}
 
       - name: run backend
-        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup node app.js > /dev/null 2>&1 &'
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup node Backend/app.js > /dev/null 2>&1 &'
         env: 
           PHOST: ${{ secrets.PHOST }}
