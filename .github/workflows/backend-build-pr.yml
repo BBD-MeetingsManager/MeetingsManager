@@ -19,5 +19,5 @@ jobs:
           
       - name: Install dependacies & build
       - working-directory: ./Backend
-      - run: npm ci
+      - run: npm i
       - run: npm run build
