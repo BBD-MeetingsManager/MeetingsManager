@@ -60,6 +60,10 @@ export const CalendarComponent = () => {
     const [upcomingMeetings, setUpcomingMeetings] = useState([]);
 
     useEffect(() => {
+        if (!localStorage.getItem("id_token")){
+            return ;
+        }
+
         const options = {
             method: "GET",
             headers: {

@@ -1,10 +1,9 @@
 import { CalendarMonth } from "@mui/icons-material"
-import {Box, AppBar, Toolbar, IconButton, Typography, Button, ListItemText} from "@mui/material"
-import React, {useEffect} from "react";
+import {Box, AppBar, Toolbar, IconButton, Typography, Button} from "@mui/material"
+import React, {useEffect, useState} from "react";
 import './Navbar.css';
 import MeetingInvite from "./MeetingInvite.tsx";
 import {paths} from "../enums/paths.tsx";
-import {format} from "date-fns";
 import NavbarUser from "./NavbarUser.tsx";
 
 const Navbar = () => {
@@ -14,7 +13,7 @@ const Navbar = () => {
     const redirectUriLogIn = 'http://localhost:5173/redirect';
     const redirectUriSignOut = 'http://localhost:5173/sign-out';
 
-    const isLoggedIn = localStorage.getItem("id_token") != null;
+    const isLoggedIn = localStorage.getItem("id_token") != null
     const buttonOnClick = () => {
         if (!isLoggedIn){
             // If not logged in, follow flow to log in
@@ -73,7 +72,8 @@ const Navbar = () => {
                         setMeetingInvites(tmpMeetings);
                     }
                 }));
-    }, []);
+    }, []
+    );
 
     return (
         <Box>

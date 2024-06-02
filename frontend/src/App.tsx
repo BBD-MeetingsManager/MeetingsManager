@@ -1,29 +1,30 @@
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import './App.css'
-import Navbar from './components/Navbar'
 import Landing from './pages/Landing'
 import Redirect from './pages/Redirect'
 import SignOut from './pages/SignOut'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
+import {paths} from "./enums/paths.tsx";
 
 function App() {
 
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: paths.landingPage,
       element: <Landing />,
+      index: true
     },
     {
-      path: 'home',
+      path: paths.home,
       element: <Home />
     },
     {
-      path: '/redirect',
+      path: paths.redirect,
       element: <Redirect />,
     },
     {
-      path: '/sign-out',
+      path: paths.signOut,
       element: <SignOut />,
     }
   ])
@@ -42,7 +43,6 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Navbar />
         <RouterProvider router={router} />
       </ThemeProvider>
     </>
