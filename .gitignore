@@ -11,3 +11,5 @@ Terraform/.terraform.tfstate.lock.info
 Terraform/terraform.tfstate
 Terraform/terraform.tfstate.backup
 Keys
+
+node_modules
