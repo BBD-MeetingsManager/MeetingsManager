@@ -49,4 +49,19 @@ router.put('/editUsername', verifyToken, async (request, response, next) => {
     )
 });
 
+// Get username and email
+router.get('/getMyDetails', verifyToken, async (request, response, next) => {
+    const email = request.user.email;
+    dbContext.query(`
+            select email, username
+            from \`User\`
+            where email = ?`,
+        [email],
+        (error, result) => {
+            if (error) next(error);
+            else response.send(result);
+        }
+    )
+});
+
 module.exports = router
