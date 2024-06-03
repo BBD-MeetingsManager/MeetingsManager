@@ -191,7 +191,7 @@ router.get('/getFriendsForUser', verifyToken, async (request, response, next) =>
                         username: user.targetEmail === email ? user.senderUsername : user.targetUsername,
                     });
                 }
-                response.send({friends});
+                response.send(friends);
             }
         }
     )
@@ -224,7 +224,7 @@ router.get('/getFriendRequests', verifyToken, async (request, response, next) =>
                         username: user.senderUsername,
                     });
                 }
-                response.send({friends});
+                response.send(friends);
             }
         }
     )

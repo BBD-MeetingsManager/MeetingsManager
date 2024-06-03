@@ -79,7 +79,7 @@ const NavbarUser = () => {
                             console.log("got user", user);
                             setUserInformation({
                                 email: user[0].email,
-                                username: user[0].username
+                                username: user[0].username ?? 'anonymous'
                             });
                         }));
             },

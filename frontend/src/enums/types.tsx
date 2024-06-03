@@ -1,9 +1,17 @@
 export interface UserMeeting {
-    meetingID: String,
-    title: String,
-    description: String,
-    link: String,
-    startTime: String,
-    endTime: String,
-    isCancelled: Boolean
+    meetingID: string,
+    title: string,
+    description: string,
+    link: string,
+    startTime: string,
+    endTime: string,
+    isCancelled: boolean
+}
+
+export interface MeetingInviteType {
+    meetingID: string,
+    title: string,
+    description: string,
+    startTime: string,
+    endTime: string,
 }

@@ -1,13 +1,13 @@
 
-import React, { useEffect, useState, MouseEvent } from "react";
+import React, {useEffect, useState, MouseEvent} from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { AddBox, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { generateCalendar } from "../utils/calendar";
-import {Box, Button, FormGroup, ListItemText, Modal, Stack, Tab, TextField, Typography} from "@mui/material";
+import {Box, Button, FormGroup, Modal, Stack, Tab, TextField} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider, TimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import {Field, FieldArray, Formik, useFormik} from "formik";
+import {FieldArray, Formik, useFormik} from "formik";
 import * as yup from 'yup';
 import 'dayjs/locale/en-gb'
 import { TabContext, TabList } from "@mui/lab";
@@ -57,9 +57,13 @@ export const CalendarComponent = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [tabValue, setTabValue] = useState<string>('3');
 
-    const [upcomingMeetings, setUpcomingMeetings] = useState([]);
+    const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
+        if (!localStorage.getItem("id_token")){
+            return ;
+        }
+
         const options = {
             method: "GET",
             headers: {
@@ -80,7 +84,7 @@ export const CalendarComponent = () => {
                                 </p>
                                 <section className="w-9/12 space-y-1">
                                     {Array.isArray(meetings) && (
-                                        meetings.filter((meeting: UserMeeting) => format(new Date(meeting.startTime), 'dd-MM-yyyy') === format(date['$d'], 'dd-MM-yyyy')).map((meeting: UserMeeting, index: Number) => (
+                                        meetings.filter((meeting: UserMeeting) => format(new Date(meeting.startTime), 'dd-MM-yyyy') === format(date.toDate(), 'dd-MM-yyyy')).map((meeting: UserMeeting, index: Number) => (
                                             <p key={`${index}`} className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10" onClick={handleMeetingClickInCalendar}>
                                                 • {meeting.title}
                                             </p>
@@ -96,9 +100,43 @@ export const CalendarComponent = () => {
                 }));
     }, []);
 
+    const [userFriends, setUserFriends] = useState<JSX.Element[]>([]);
+
+    React.useEffect(
+        () => {
+            if (!localStorage.getItem("id_token")){
+                return ;
+            }
+
+            const options = {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem('id_token')}`,
+                },
+            };
+
+            const url = `${paths.apiUrlLocal}/complex/getFriendsForUser`;
+            fetch(url, options)
+                .then(result => result.json()
+                    .then(friends => {
+                        const tmpFriends = [];
+
+                        if (Array.isArray(friends)) {
+                            for (const friend of friends){
+                                tmpFriends.push(
+                                    <option value={`${friend.email}`}/>
+                                );
+                            }
+                        }
+
+                        setUserFriends(tmpFriends);
+                    }));
+        }, []
+    );
+
     const mergeDateTime = (date: Dayjs, time: Dayjs) => {
-        const [year, month, day] = format(new Date(date['$d']), 'yyyy-MM-dd').toString().split('-').map(numStr => parseInt(numStr, 10));
-        const [hours, minutes, seconds] = format(new Date(time['$d']), 'HH:mm:ss').toString().split(':').map(numStr => parseInt(numStr, 10));
+        const [year, month, day] = format(new Date(date.toDate()), 'yyyy-MM-dd').toString().split('-').map(numStr => parseInt(numStr, 10));
+        const [hours, minutes, seconds] = format(new Date(time.toDate()), 'HH:mm:ss').toString().split(':').map(numStr => parseInt(numStr, 10));
 
         return format(new Date(year, month - 1, day, hours, minutes, seconds).toString(), 'yyyy-MM-dd HH:mm:ss');
     }
@@ -133,7 +171,7 @@ export const CalendarComponent = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values: any) => {
-            values.members = values.members.filter(guest => guest !== '');
+            values.members = values.members.filter((guest: string) => guest !== '');
 
             const url = `${paths.apiUrlLocal}/complex/createMeeting`
             const options = {
@@ -166,6 +204,7 @@ export const CalendarComponent = () => {
         formik.setFieldValue('date', selected, true)
     }, [selected])
 
+    // @ts-ignore
     return (
         <article>
             <section className="flex justify-between items-center p-4 text-sm font-thin border border-paynes-gray-900">
@@ -211,27 +250,33 @@ export const CalendarComponent = () => {
                     <LocalizationProvider adapterLocale="en-gb" dateAdapter={AdapterDayjs}>
                         <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
                             <Stack direction={'column'} className="flex flex-col gap-4 p-8">
-                                <TextField label='Title' name="title" value={formik.values.title} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.title && Boolean(formik.errors.title)} helperText={formik.touched.title && formik.errors.title} required />
-                                <TextField label='Description' name="description" value={formik.values.description} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.description && Boolean(formik.errors.description)} helperText={formik.touched.description && formik.errors.description} required />
-                                <TextField label='Link' name="link" value={formik.values.link} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.link && Boolean(formik.errors.link)} helperText={formik.touched.link && formik.errors.link} required />
+                                <TextField autoComplete={'off'} label='Title' name="title" value={formik.values.title} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.title && Boolean(formik.errors.title)} helperText={formik.touched.title && formik.errors.title} required />
+                                <TextField autoComplete={'off'} label='Description' name="description" value={formik.values.description} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.description && Boolean(formik.errors.description)} helperText={formik.touched.description && formik.errors.description} required />
+                                <TextField autoComplete={'off'} label='Link' name="link" value={formik.values.link} onChange={formik.handleChange} onBlur={formik.handleBlur} error={formik.touched.link && Boolean(formik.errors.link)} helperText={formik.touched.link && formik.errors.link} required />
 
-                                <Formik initialValues={formik.initialValues}>
+                                <Formik initialValues={formik.initialValues} onSubmit={() => {}}>
                                     {({ values }) => (
+                                        // @ts-ignore
                                         <FieldArray name="members" value={formik.values.members}>
                                             {({ push, remove }) => (
                                                 <React.Fragment>
                                                     {values.members.map((guest, index) => (
                                                         <div key={`guest-${index}`}>
                                                             <div key={index}>
-                                                                <Field
+                                                                <input
+                                                                    autoComplete={'off'}
                                                                     name={`members.${index}`}
                                                                     placeholder="Enter guest email"
                                                                     type="email" // Set type as email for email validation
+                                                                    list="friendOptions"
                                                                 />
+                                                                <datalist id="friendOptions">
+                                                                    {userFriends}
+                                                                </datalist>
                                                                 <Button type="button"
                                                                         onClick={() => {
-                                                                                formik.values.members.splice(index)
-                                                                                remove(index)
+                                                                            formik.values.members.splice(index)
+                                                                            remove(index)
                                                                         }}>
                                                                     Remove
                                                                 </Button>

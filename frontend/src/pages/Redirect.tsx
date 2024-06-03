@@ -1,44 +1,50 @@
+
+import { useNavigate } from 'react-router-dom';
 import {paths} from "../enums/paths.tsx";
 
 const Redirect = () => {
-    const homePageURL = 'http://localhost:5173';
+    const navigate = useNavigate();
 
-    if (!localStorage.getItem('id_token')) {
-        const baseURL = 'http://localhost:8080';
+    const token = localStorage.getItem('id_token');
+    if (!token) {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
 
-        fetch(`${baseURL}/auth/getAccessToken?code=${code}`)
+        fetch(`${paths.apiUrlLocal}/auth/getAccessToken?code=${code}`)
             .then((result) => {
                 result.json()
                     .then(((response) => {
-                        localStorage.setItem('id_token', response.id_token);
-                        localStorage.setItem('refresh_token', response.refresh_token);
+                        if (response.id_token){
+                            localStorage.setItem('id_token', response.id_token);
+                            localStorage.setItem('refresh_token', response.refresh_token);
 
-                        // Register user on DB
-                        const url = `${paths.apiUrlLocal}/user/login`;
-                        const options = {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${response.id_token}`,
-                            }
-                        };
+                            // Register user on DB
+                            const url = `${paths.apiUrlLocal}/user/login`;
+                            const options = {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${response.id_token}`,
+                                }
+                            };
 
-                        fetch(url, options)
-                            .then(result => result.json()
-                                .then(asJson => {
-                                    console.log("db registration response", asJson);
-                                    window.location.href = homePageURL;
-                                }));
+                            fetch(url, options)
+                                .then(result => result.json()
+                                    .then(asJson => {
+                                        console.log("db registration response", asJson);
+                                        navigate(paths.home);
+                                    }));
+                        }
+
+                        navigate(paths.home);
                     }))
             });
     }
     else {
-        window.location.href = homePageURL;
+        navigate(paths.home);
     }
 
-    return;
+    return null;
 }
 
 export default Redirect
