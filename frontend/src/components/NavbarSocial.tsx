@@ -69,7 +69,7 @@ const NavbarSocial = () => {
             .then(result => result.json()
                 .then(asJson => {
                     console.log("response, friend request changed", asJson);
-                    setGetFriendRequestCount(getFriendRequestCount + 1);
+                    setGetFriendRequestCount(prevState => prevState + 1);
                 }));
     }
 
@@ -128,7 +128,7 @@ const NavbarSocial = () => {
 
              <Modal open={modalOpen} onClose={() => setModalOpen(false)} disableAutoFocus className="absolute flex items-center justify-center">
                  <FormGroup className="md:w-7/12 w-11/12 h-fit items-center bg-anti-flash-white p-8 rounded-3xl">
-                     <h3 className="text-3xl">Edit Username</h3>
+                     <h3 className="text-3xl">Send Friend Request</h3>
                      <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
                          <Stack direction={'column'} className="flex flex-col gap-4 p-8">
                              <TextField label='Email' name="email" value={formik.values.email}

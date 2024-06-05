@@ -208,7 +208,6 @@ export const CalendarComponent = () => {
 
       fetch(url.toString(), options).then((result) =>
         result.json().then((asJson) => {
-          console.log("response", asJson);
           handleClose();
         })
       );
@@ -216,7 +215,7 @@ export const CalendarComponent = () => {
   });
 
   const handleOpen = () => {
-    setGetFriendsCount(getFriendsCount + 1);
+    setGetFriendsCount(prevState => prevState + 1);
     setModalOpen(true);
   }
 
@@ -336,7 +335,7 @@ export const CalendarComponent = () => {
                       <FieldArray name="members" value={formik.values.members}>
                         {({ push, remove }) => (
                           <>
-                            {values.members.map((guest, index) => (
+                            {values.members.map((_, index) => (
                               <div key={`guest-${index}`}>
                                 <div key={index} className="flex flex-row">
                                   {/* <input
@@ -357,7 +356,6 @@ export const CalendarComponent = () => {
                                   <Button
                                     type="button"
                                     onClick={() => {
-                                      formik.values.members.splice(index);
                                       remove(index);
                                     }}
                                   >
@@ -368,7 +366,6 @@ export const CalendarComponent = () => {
                                 <Button
                                   type="button"
                                   onClick={() => {
-                                    formik.values.members.push(guest);
                                     push('');
                                   }}
                                 >

@@ -52,7 +52,7 @@ const NavbarUser = () => {
                         if (asJson.hasOwnProperty('alert')) console.log("username already in use");
                         else {
                             console.log("successfully edited username", asJson);
-                            setGetDetailsCount(getDetailsCount + 1);
+                            setGetDetailsCount(prevState => prevState + 1);
                             handleClose();
                         }
                     }));
