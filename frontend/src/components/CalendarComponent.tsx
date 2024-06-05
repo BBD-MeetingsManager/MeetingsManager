@@ -12,7 +12,7 @@ import 'dayjs/locale/en-gb';
 import { TabContext, TabList } from '@mui/lab';
 import { paths } from '../enums/paths.tsx';
 import { format } from 'date-fns';
-import { UserMeeting } from '../enums/types.tsx';
+import {CalendarComponentProps, UserMeeting} from '../enums/types.tsx';
 
 const monthsMap = new Map<number, string>([
   [0, 'JANUARY'],
@@ -47,8 +47,8 @@ const validationSchema = yup.object({
   // members: yup.string().max(50).email('Enter the email of the guest').required('This field is required')
 });
 
-export const CalendarComponent = () => {
-  const daysOfTheWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const CalendarComponent = (props: CalendarComponentProps) => {
+    const daysOfTheWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate: Dayjs = dayjs();
 
   const [today, setToday] = useState<Dayjs>(currentDate);
@@ -57,6 +57,14 @@ export const CalendarComponent = () => {
   const [tabValue, setTabValue] = useState<string>('3');
   const [getFriendsCount, setGetFriendsCount] = useState<number>(0);
   const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
+
+  React.useEffect(
+      () => {
+        console.log("caught on calendar");
+        setGetUpcomingMeetingsCount(prevState => prevState + 1);
+      },
+      [props.updateTrigger]
+  );
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
