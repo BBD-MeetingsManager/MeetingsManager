@@ -6,8 +6,9 @@ import MeetingInvite from "./MeetingInvite.tsx";
 import {paths} from "../enums/paths.tsx";
 import NavbarUser from "./NavbarUser.tsx";
 import NavbarSocial from "./NavbarSocial.tsx";
+import {NavbarProps} from "../enums/types.tsx";
 
-const Navbar = () => {
+const Navbar = (props: NavbarProps) => {
     const [getMeetingInvitesCount, setGetMeetingInvitesCount] = useState<number>(0);
 
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
@@ -71,7 +72,11 @@ const Navbar = () => {
                                     description={meeting.description}
                                     startTime={meeting.startTime}
                                     endTime={meeting.endTime}
-                                    updateInvites={() => {console.log("called update invite"); setGetMeetingInvitesCount(prevState => prevState + 1)}}
+                                    updateInvites={() => {
+                                        console.log("called update invite");
+                                        setGetMeetingInvitesCount(prevState => prevState + 1);
+                                        props.updateStateFunction();
+                                    }}
                                 />
                             )
                         }

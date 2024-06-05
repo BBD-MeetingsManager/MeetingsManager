@@ -16,3 +16,11 @@ export interface MeetingInviteType {
     endTime: string,
     updateInvites: () => void
 }
+
+export interface NavbarProps {
+    updateStateFunction: () => void
+}
+
+export interface CalendarComponentProps {
+    updateTrigger: number
+}
