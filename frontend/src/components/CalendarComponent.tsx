@@ -344,47 +344,6 @@ export const CalendarComponent = () => {
                 <Formik initialValues={formik.initialValues} onSubmit={() => {}}>
                   {({ values }) => (
                     // @ts-ignore
-                    // <FieldArray name="members" value={formik.values.members}>
-                    //   {({ push, remove }) => (
-                    //     <React.Fragment>
-                    //       {values.members.map((guest, index) => (
-                    //         <div key={`guest-${index}`}>
-                    //           <div key={index}>
-                    //             <input
-                    //               autoComplete={"off"}
-                    //               name={`members.${index}`}
-                    //               placeholder="Enter guest email"
-                    //               type="email" // Set type as email for email validation
-                    //               list="friendOptions"
-                    //             />
-                    //             <datalist id="friendOptions">
-                    //               {userFriends}
-                    //             </datalist>
-                    //             <Button
-                    //               type="button"
-                    //               onClick={() => {
-                    //                 formik.values.members.splice(index);
-                    //                 remove(index);
-                    //               }}
-                    //             >
-                    //               Remove
-                    //             </Button>
-                    //           </div>
-
-                    //           <Button
-                    //             type="button"
-                    //             onClick={() => {
-                    //               formik.values.members.push(guest);
-                    //               push("");
-                    //             }}
-                    //           >
-                    //             Add Guest
-                    //           </Button>
-                    //         </div>
-                    //       ))}
-                    //     </React.Fragment>
-                    //   )}
-                    // </FieldArray>
                     <FieldArray name="members" value={formik.values.members}>
                       {({ push, remove }) => (
                         <>
