@@ -350,6 +350,11 @@ export const CalendarComponent = () => {
                                     label="guest"
                                     name={`members.${index}`}
                                     type="email"
+                                    onChange={(e) => {
+                                      const updatedMembers = [...formik.values.members];
+                                      updatedMembers[index] = e.target.value;
+                                      formik.setFieldValue("members", updatedMembers);
+                                    }}
                                   />
                                   <datalist id="friendOptions">{userFriends}</datalist>
 
