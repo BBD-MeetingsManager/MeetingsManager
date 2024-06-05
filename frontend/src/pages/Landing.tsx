@@ -4,7 +4,9 @@ import Navbar from '../components/Navbar.tsx';
 const Landing = () => {
   return (
     <div>
-      <Navbar />
+      <Navbar
+        updateStateFunction={() => {}}
+      />
       <main className="w-full pt-16 md:pt-0 md:h-screen min-h-screen overflow-clip md:bg-gradient-to-r bg-gradient-to-b from-anti-flash-white to-paynes-gray-800">
         <section className="w-full h-full flex md:flex-row flex-col-reverse">
           <section className="w-full flex flex-col gap-2 justify-center md:px-32 px-10 py-8">

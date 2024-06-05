@@ -15,6 +15,7 @@ const validationSchema = yup.object({
 const NavbarSocial = () => {
     const token = localStorage.getItem("id_token");
 
+    const [getFriendRequestCount, setGetFriendRequestCount] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     const formik = useFormik<FormDataType>({
@@ -36,12 +37,21 @@ const NavbarSocial = () => {
             };
 
             fetch(url, options)
-                .then(result => result.json()
-                    .then(asJson => {
-                        //Todo, add toast
-                        console.log("Successfully sent friend request", asJson);
+                .then(result => {
+                    if (!result.ok) {
+                        console.log("Unsuccessfully sent friend request", result);
                         handleClose();
-                    }));
+                    }
+                    else {
+                        result.json()
+                            .then(asJson => {
+                                //Todo, add toast
+                                console.log("Successfully sent friend request", asJson);
+                                handleClose();
+                            });
+                    }
+                });
+
         },
     },);
 
@@ -68,6 +78,7 @@ const NavbarSocial = () => {
             .then(result => result.json()
                 .then(asJson => {
                     console.log("response, friend request changed", asJson);
+                    setGetFriendRequestCount(prevState => prevState + 1);
                 }));
     }
 
@@ -105,7 +116,7 @@ const NavbarSocial = () => {
 
                         setFriendInvites(tmpFriends);
                     }));
-        }, []
+        }, [getFriendRequestCount]
     );
 
     return (
@@ -126,7 +137,7 @@ const NavbarSocial = () => {
 
              <Modal open={modalOpen} onClose={() => setModalOpen(false)} disableAutoFocus className="absolute flex items-center justify-center">
                  <FormGroup className="md:w-7/12 w-11/12 h-fit items-center bg-anti-flash-white p-8 rounded-3xl">
-                     <h3 className="text-3xl">Edit Username</h3>
+                     <h3 className="text-3xl">Send Friend Request</h3>
                      <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
                          <Stack direction={'column'} className="flex flex-col gap-4 p-8">
                              <TextField label='Email' name="email" value={formik.values.email}

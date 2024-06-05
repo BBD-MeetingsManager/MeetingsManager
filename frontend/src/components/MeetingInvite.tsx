@@ -23,6 +23,7 @@ const MeetingInvite = (props: MeetingInviteType) => {
             .then(result => result.json()
                 .then(asJson => {
                     console.log("response, meeting changed", asJson);
+                    props.updateInvites();
                 }));
     }
 

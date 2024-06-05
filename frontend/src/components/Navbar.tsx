@@ -1,13 +1,16 @@
 import { CalendarMonth } from "@mui/icons-material"
 import {Box, AppBar, Toolbar, IconButton, Typography, Button} from "@mui/material"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import './Navbar.css';
 import MeetingInvite from "./MeetingInvite.tsx";
 import {paths} from "../enums/paths.tsx";
 import NavbarUser from "./NavbarUser.tsx";
 import NavbarSocial from "./NavbarSocial.tsx";
+import {NavbarProps} from "../enums/types.tsx";
 
-const Navbar = () => {
+const Navbar = (props: NavbarProps) => {
+    const [getMeetingInvitesCount, setGetMeetingInvitesCount] = useState<number>(0);
+
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
     const clientID = '5hv4ev8ff59uqven58ifeddtom';
     const scopes = "email openid phone";
@@ -47,7 +50,6 @@ const Navbar = () => {
         if (!isLoggedIn){
             return;
         }
-        
         const options = {
             method: "GET",
             headers: {
@@ -59,8 +61,9 @@ const Navbar = () => {
         fetch(url, options)
             .then(result => result.json()
                 .then(meetings => {
+                    const tmpMeetings = [];
+
                     if (!meetings.hasOwnProperty('alert')){
-                        const tmpMeetings = [];
                         for (const meeting of meetings) {
                             tmpMeetings.push(
                                 <MeetingInvite
@@ -69,14 +72,19 @@ const Navbar = () => {
                                     description={meeting.description}
                                     startTime={meeting.startTime}
                                     endTime={meeting.endTime}
+                                    updateInvites={() => {
+                                        console.log("called update invite");
+                                        setGetMeetingInvitesCount(prevState => prevState + 1);
+                                        props.updateStateFunction();
+                                    }}
                                 />
                             )
                         }
-
-                        setMeetingInvites(tmpMeetings);
                     }
+
+                    setMeetingInvites(tmpMeetings);
                 }));
-    }, []
+    }, [getMeetingInvitesCount]
     );
 
     return (

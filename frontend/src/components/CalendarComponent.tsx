@@ -12,7 +12,7 @@ import 'dayjs/locale/en-gb';
 import { TabContext, TabList } from '@mui/lab';
 import { paths } from '../enums/paths.tsx';
 import { format } from 'date-fns';
-import { UserMeeting } from '../enums/types.tsx';
+import {CalendarComponentProps, UserMeeting} from '../enums/types.tsx';
 
 const monthsMap = new Map<number, string>([
   [0, 'JANUARY'],
@@ -47,14 +47,24 @@ const validationSchema = yup.object({
   // members: yup.string().max(50).email('Enter the email of the guest').required('This field is required')
 });
 
-export const CalendarComponent = () => {
-  const daysOfTheWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const CalendarComponent = (props: CalendarComponentProps) => {
+    const daysOfTheWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate: Dayjs = dayjs();
 
   const [today, setToday] = useState<Dayjs>(currentDate);
   const [selected, setSelected] = useState<Dayjs>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>('3');
+  const [getFriendsCount, setGetFriendsCount] = useState<number>(0);
+  const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
+
+  React.useEffect(
+      () => {
+        console.log("caught on calendar");
+        setGetUpcomingMeetingsCount(prevState => prevState + 1);
+      },
+      [props.updateTrigger]
+  );
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
@@ -111,7 +121,7 @@ export const CalendarComponent = () => {
         setUpcomingMeetings(calendarMeetings);
       })
     );
-  }, []);
+  }, [getUpcomingMeetingsCount]);
 
   const [userFriends, setUserFriends] = useState<JSX.Element[]>([]);
 
@@ -140,7 +150,7 @@ export const CalendarComponent = () => {
         setUserFriends(tmpFriends);
       })
     );
-  }, []);
+  }, [getFriendsCount]);
 
   const mergeDateTime = (date: Dayjs, time: Dayjs) => {
     const [year, month, day] = format(new Date(date.toDate()), 'yyyy-MM-dd')
@@ -160,10 +170,7 @@ export const CalendarComponent = () => {
 
   const handleCardClick = (date: Dayjs) => {
     setSelected(date);
-    setModalOpen(true);
-  };
-  const handleClose = () => {
-    setModalOpen(false);
+    handleOpen();
   };
 
   const handleTabChange = (_event: React.SyntheticEvent, newTabValue: string) => {
@@ -209,14 +216,25 @@ export const CalendarComponent = () => {
       };
 
       fetch(url.toString(), options).then((result) =>
-        result.json().then((asJson) => {
-          console.log('response', asJson);
-          formik.resetForm();
-          setModalOpen(false);
+        result.json().
+          then(asJson => {
+            console.log("Created meeting", asJson)
+            handleClose();
+            setGetUpcomingMeetingsCount(prevState => prevState + 1);
         })
       );
     },
   });
+
+  const handleOpen = () => {
+    setGetFriendsCount(prevState => prevState + 1);
+    setModalOpen(true);
+  }
+
+  const handleClose = () => {
+    formik.resetForm();
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     formik.setFieldValue('date', selected, true);
@@ -329,7 +347,7 @@ export const CalendarComponent = () => {
                       <FieldArray name="members" value={formik.values.members}>
                         {({ push, remove }) => (
                           <>
-                            {values.members.map((guest, index) => (
+                            {values.members.map((_, index) => (
                               <div key={`guest-${index}`}>
                                 <div key={index} className="flex flex-row">
                                   {/* <input
@@ -344,13 +362,17 @@ export const CalendarComponent = () => {
                                     label="guest"
                                     name={`members.${index}`}
                                     type="email"
+                                    onChange={(e) => {
+                                      const updatedMembers = [...formik.values.members];
+                                      updatedMembers[index] = e.target.value;
+                                      formik.setFieldValue("members", updatedMembers);
+                                    }}
                                   />
                                   <datalist id="friendOptions">{userFriends}</datalist>
 
                                   <Button
                                     type="button"
                                     onClick={() => {
-                                      formik.values.members.splice(index);
                                       remove(index);
                                     }}
                                   >
@@ -361,7 +383,6 @@ export const CalendarComponent = () => {
                                 <Button
                                   type="button"
                                   onClick={() => {
-                                    formik.values.members.push(guest);
                                     push('');
                                   }}
                                 >
@@ -379,7 +400,10 @@ export const CalendarComponent = () => {
                     label="Date"
                     name="date"
                     value={formik.values.date ? formik.values.date : dayjs()}
-                    onChange={(value) => formik.setFieldValue('date', value, true)}
+                    onChange={(value) => {
+                      formik.setFieldValue('date', value, true);
+                      setSelected(value || dayjs());
+                    }}
                   />
 
                   <TimePicker

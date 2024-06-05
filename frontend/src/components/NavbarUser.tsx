@@ -24,6 +24,7 @@ const NavbarUser = () => {
         username: '',
     });
 
+    const [getDetailsCount, setGetDetailsCount] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     const formik = useFormik<FormDataType>({
@@ -51,6 +52,7 @@ const NavbarUser = () => {
                         if (asJson.hasOwnProperty('alert')) console.log("username already in use");
                         else {
                             console.log("successfully edited username", asJson);
+                            setGetDetailsCount(prevState => prevState + 1);
                             handleClose();
                         }
                     }));
@@ -62,30 +64,34 @@ const NavbarUser = () => {
         setModalOpen(false);
     }
 
+    React.useEffect(
+        () => {
+            if (!token){
+                return;
+            }
+
+            const options = {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            };
+
+            const url = `${paths.apiUrlLocal}/user/getMyDetails`;
+            fetch(url, options)
+                .then(result => result.json()
+                    .then(user => {
+                        console.log("got user", user);
+                        setUserInformation({
+                            email: user[0].email,
+                            username: user[0].username ?? 'anonymous'
+                        });
+                    }));
+        },
+        [getDetailsCount]
+    );
+
     if (token){
-        React.useEffect(
-            () => {
-                const options = {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                    },
-                };
-
-                const url = `${paths.apiUrlLocal}/user/getMyDetails`;
-                fetch(url, options)
-                    .then(result => result.json()
-                        .then(user => {
-                            console.log("got user", user);
-                            setUserInformation({
-                                email: user[0].email,
-                                username: user[0].username ?? 'anonymous'
-                            });
-                        }));
-            },
-            []
-        );
-
         return (
             <div>
                 <Button
