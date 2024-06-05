@@ -37,12 +37,21 @@ const NavbarSocial = () => {
             };
 
             fetch(url, options)
-                .then(result => result.json()
-                    .then(asJson => {
-                        //Todo, add toast
-                        console.log("Successfully sent friend request", asJson);
+                .then(result => {
+                    if (!result.ok) {
+                        console.log("Unsuccessfully sent friend request", result);
                         handleClose();
-                    }));
+                    }
+                    else {
+                        result.json()
+                            .then(asJson => {
+                                //Todo, add toast
+                                console.log("Successfully sent friend request", asJson);
+                                handleClose();
+                            });
+                    }
+                });
+
         },
     },);
 

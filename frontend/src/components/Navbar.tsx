@@ -49,7 +49,6 @@ const Navbar = () => {
         if (!isLoggedIn){
             return;
         }
-        
         const options = {
             method: "GET",
             headers: {
@@ -61,8 +60,9 @@ const Navbar = () => {
         fetch(url, options)
             .then(result => result.json()
                 .then(meetings => {
+                    const tmpMeetings = [];
+
                     if (!meetings.hasOwnProperty('alert')){
-                        const tmpMeetings = [];
                         for (const meeting of meetings) {
                             tmpMeetings.push(
                                 <MeetingInvite
@@ -71,13 +71,13 @@ const Navbar = () => {
                                     description={meeting.description}
                                     startTime={meeting.startTime}
                                     endTime={meeting.endTime}
-                                    updateInvites={() => {setGetMeetingInvitesCount(prevState => prevState + 1)}}
+                                    updateInvites={() => {console.log("called update invite"); setGetMeetingInvitesCount(prevState => prevState + 1)}}
                                 />
                             )
                         }
-
-                        setMeetingInvites(tmpMeetings);
                     }
+
+                    setMeetingInvites(tmpMeetings);
                 }));
     }, [getMeetingInvitesCount]
     );
