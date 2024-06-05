@@ -125,6 +125,7 @@ const Navbar = (props: NavbarProps) => {
             </Box>
 
             <ToastComponent
+                duration={1000}
                 message={toastMessage}
                 open={showToast}
                 onClose={() => {

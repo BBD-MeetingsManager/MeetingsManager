@@ -3,13 +3,14 @@ import { Snackbar } from '@mui/material';
 type ToastProps = {
   message: string;
   open: boolean;
+  duration: number;
   onClose: () => void;
 };
 
 const ToastComponent = (props: ToastProps) => {
   return (
     <Snackbar
-      autoHideDuration={1000}
+      autoHideDuration={props.duration || 1000}
       open={props.open}
       onClose={props.onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

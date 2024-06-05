@@ -461,7 +461,9 @@ export const CalendarComponent = (props: CalendarComponentProps) => {
           meeting={meetingDetails}
         />
       )}
+
       <ToastComponent
+        duration={1000}
         message={toastMessage}
         open={showToast}
         onClose={() => {
