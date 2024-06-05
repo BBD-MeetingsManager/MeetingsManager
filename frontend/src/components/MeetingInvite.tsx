@@ -20,12 +20,13 @@ const MeetingInvite = (props: MeetingInviteType) => {
       }).toString(),
     };
 
-    fetch(url.toString(), options).then((result) =>
-      result.json().then((asJson) => {
-        console.log('response, meeting changed', asJson);
-      })
-    );
-  };
+        fetch(url.toString(), options)
+            .then(result => result.json()
+                .then(asJson => {
+                    console.log("response, meeting changed", asJson);
+                    props.updateInvites();
+                }));
+    }
 
   return (
     <div className="w-full outline-none p-4 text-sm">

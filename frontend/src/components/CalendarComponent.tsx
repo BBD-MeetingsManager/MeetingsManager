@@ -19,7 +19,7 @@ import * as yup from 'yup';
 import 'dayjs/locale/en-gb';
 import { paths } from '../enums/paths.tsx';
 import { format } from 'date-fns';
-import { UserMeeting } from '../enums/types.tsx';
+import { CalendarComponentProps, UserMeeting } from '../enums/types.tsx';
 import MeetingDetails from './MeetingDetails.tsx';
 import { getMeetingDetails } from '../api/meeting.ts';
 import { MeetingDetailsType } from '../api/types/meeting.ts';
@@ -58,7 +58,7 @@ const validationSchema = yup.object({
   // members: yup.string().max(50).email('Enter the email of the guest').required('This field is required')
 });
 
-export const CalendarComponent = () => {
+export const CalendarComponent = (props: CalendarComponentProps) => {
   const daysOfTheWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate: Dayjs = dayjs();
 
@@ -70,6 +70,13 @@ export const CalendarComponent = () => {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [showLoader, setShowLoader] = useState<boolean>(false);
+  const [getFriendsCount, setGetFriendsCount] = useState<number>(0);
+  const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
+
+  React.useEffect(() => {
+    console.log('caught on calendar');
+    setGetUpcomingMeetingsCount((prevState) => prevState + 1);
+  }, [props.updateTrigger]);
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>();
 
@@ -129,7 +136,7 @@ export const CalendarComponent = () => {
         setUpcomingMeetings(calendarMeetings);
       })
     );
-  }, [today]);
+  }, [today, getUpcomingMeetingsCount]);
 
   useEffect(() => {
     setShowLoader(false);
@@ -163,7 +170,7 @@ export const CalendarComponent = () => {
         setUserFriends(tmpFriends);
       })
     );
-  }, []);
+  }, [getFriendsCount]);
 
   const mergeDateTime = (date: Dayjs, time: Dayjs) => {
     const [year, month, day] = format(new Date(date.toDate()), 'yyyy-MM-dd')
@@ -183,11 +190,8 @@ export const CalendarComponent = () => {
 
   const handleCardClick = (date: Dayjs) => {
     setSelected(date);
+    handleOpen();
     setModalOpen(true);
-  };
-
-  const handleClose = () => {
-    setModalOpen(false);
   };
 
   const handleMeetingClickInCalendar = async (
@@ -234,9 +238,9 @@ export const CalendarComponent = () => {
 
       fetch(url.toString(), options).then((result) =>
         result.json().then((asJson) => {
-          console.log('response', asJson);
-          formik.resetForm();
-          setModalOpen(false);
+          console.log('Created meeting', asJson);
+          handleClose();
+          setGetUpcomingMeetingsCount((prevState) => prevState + 1);
         })
       );
 
@@ -244,6 +248,16 @@ export const CalendarComponent = () => {
       setToastMessage('Meeting added successfully.');
     },
   });
+
+  const handleOpen = () => {
+    setGetFriendsCount((prevState) => prevState + 1);
+    setModalOpen(true);
+  };
+
+  const handleClose = () => {
+    formik.resetForm();
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     formik.setFieldValue('date', selected, true);
@@ -291,7 +305,11 @@ export const CalendarComponent = () => {
       </section>
       <section className="w-full grid grid-cols-7 shadow-xl">
         {upcomingMeetings}
-        <Modal open={showLoader || !upcomingMeetings} disableAutoFocus className='absolute flex justify-center items-center'>
+        <Modal
+          open={showLoader || !upcomingMeetings}
+          disableAutoFocus
+          className="absolute flex justify-center items-center"
+        >
           <CircularProgress />
         </Modal>
       </section>
@@ -412,7 +430,10 @@ export const CalendarComponent = () => {
                   label="Date"
                   name="date"
                   value={formik.values.date ? formik.values.date : dayjs()}
-                  onChange={(value) => formik.setFieldValue('date', value, true)}
+                  onChange={(value) => {
+                    formik.setFieldValue('date', value, true);
+                    setSelected(value || dayjs());
+                  }}
                 />
 
                 <TimePicker

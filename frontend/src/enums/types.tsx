@@ -14,4 +14,13 @@ export interface MeetingInviteType {
     description: string,
     startTime: string,
     endTime: string,
+    updateInvites: () => void
+}
+
+export interface NavbarProps {
+    updateStateFunction: () => void
+}
+
+export interface CalendarComponentProps {
+    updateTrigger: number
 }

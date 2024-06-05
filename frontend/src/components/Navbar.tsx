@@ -6,8 +6,11 @@ import MeetingInvite from './MeetingInvite.tsx';
 import { paths } from '../enums/paths.tsx';
 import NavbarUser from './NavbarUser.tsx';
 import NavbarSocial from './NavbarSocial.tsx';
+import { NavbarProps } from '../enums/types.tsx';
 
-const Navbar = () => {
+const Navbar = (props: NavbarProps) => {
+  const [getMeetingInvitesCount, setGetMeetingInvitesCount] = useState<number>(0);
+
   const hostedUiURL = 'https://meeting-manager.auth.eu-west-1.amazoncognito.com';
   const clientID = '5hv4ev8ff59uqven58ifeddtom';
   const scopes = 'email openid phone';
@@ -15,6 +18,7 @@ const Navbar = () => {
   const redirectUriSignOut = 'http://localhost:5173/sign-out';
 
   const isLoggedIn = localStorage.getItem('id_token') != null;
+
   const buttonOnClick = () => {
     if (!isLoggedIn) {
       // If not logged in, follow flow to log in
@@ -47,6 +51,7 @@ const Navbar = () => {
   const handleMenuClick = () => {
     setShowMenu(!showMenu);
   };
+
   useEffect(() => {
     if (!isLoggedIn) {
       return;
@@ -62,8 +67,9 @@ const Navbar = () => {
     const url = `${paths.apiUrlLocal}/complex/pendingMeetings`;
     fetch(url, options).then((result) =>
       result.json().then((meetings) => {
+        const tmpMeetings = [];
+
         if (!meetings.hasOwnProperty('alert')) {
-          const tmpMeetings = [];
           for (const meeting of meetings) {
             tmpMeetings.push(
               <MeetingInvite
@@ -72,15 +78,20 @@ const Navbar = () => {
                 description={meeting.description}
                 startTime={meeting.startTime}
                 endTime={meeting.endTime}
+                updateInvites={() => {
+                  console.log('called update invite');
+                  setGetMeetingInvitesCount((prevState) => prevState + 1);
+                  props.updateStateFunction();
+                }}
               />
             );
           }
-
-          setMeetingInvites(tmpMeetings);
         }
+
+        setMeetingInvites(tmpMeetings);
       })
     );
-  }, []);
+  }, [getMeetingInvitesCount]);
 
   return (
     <Box>
@@ -116,9 +127,9 @@ const Navbar = () => {
             >{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
           </div>
           <div className="md:hidden flex flex-col text-charcoal-100">
-            <Menu onClick={handleMenuClick} color='action' />
+            <Menu onClick={handleMenuClick} color="action" />
             {showMenu && (
-              <div className='absolute bg-mint_cream rounded-md top-16 right-0 flex flex-col'>
+              <div className="absolute bg-mint_cream rounded-md top-16 right-0 flex flex-col">
                 {isLoggedIn && (
                   <section className="flex flex-col items-center justify-end ">
                     <NavbarUser />
