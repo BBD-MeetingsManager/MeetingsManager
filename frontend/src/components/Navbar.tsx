@@ -1,6 +1,6 @@
-import { CalendarMonth } from '@mui/icons-material';
+import { CalendarMonth, Menu } from '@mui/icons-material';
 import { Box, AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Navbar.css';
 import MeetingInvite from './MeetingInvite.tsx';
 import { paths } from '../enums/paths.tsx';
@@ -42,7 +42,11 @@ const Navbar = () => {
   };
 
   const [meetingInvites, setMeetingInvites] = React.useState<JSX.Element[]>([]);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
 
+  const handleMenuClick = () => {
+    setShowMenu(!showMenu);
+  };
   useEffect(() => {
     if (!isLoggedIn) {
       return;
@@ -94,20 +98,44 @@ const Navbar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Meeting Manager
           </Typography>
-          {isLoggedIn && (
-            <section className="flex flex-row gap-4 items-center justify-end">
-              <NavbarUser />
-              <NavbarSocial />
-              <div className="dropdown">
-                <button className="dropbtn">Dropdown</button>
-                <div className="dropdown-content">{meetingInvites}</div>
+
+          <div className="md:flex hidden flex-row">
+            {isLoggedIn && (
+              <section className="flex flex-row gap-4 items-center justify-end ">
+                <NavbarUser />
+                <NavbarSocial />
+                <div className="dropdown">
+                  <button className="dropbtn">Dropdown</button>
+                  <div className="dropdown-content text-charcoal-100">{meetingInvites}</div>
+                </div>
+              </section>
+            )}
+            <Button
+              color="inherit"
+              onClick={buttonOnClick}
+            >{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
+          </div>
+          <div className="md:hidden flex flex-col text-charcoal-100">
+            <Menu onClick={handleMenuClick} color='action' />
+            {showMenu && (
+              <div className='absolute bg-mint_cream rounded-md top-16 right-0 flex flex-col'>
+                {isLoggedIn && (
+                  <section className="flex flex-col items-center justify-end ">
+                    <NavbarUser />
+                    <NavbarSocial />
+                    <div className="dropdown">
+                      <button className="dropbtn">Dropdown</button>
+                      <div className="dropdown-content text-charcoal-100">{meetingInvites}</div>
+                    </div>
+                  </section>
+                )}
+                <Button
+                  color="inherit"
+                  onClick={buttonOnClick}
+                >{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
               </div>
-            </section>
-          )}
-          <Button
-            color="inherit"
-            onClick={buttonOnClick}
-          >{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
+            )}
+          </div>
         </Toolbar>
       </AppBar>
     </Box>
