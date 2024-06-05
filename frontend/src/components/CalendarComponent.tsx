@@ -13,6 +13,10 @@ import { TabContext, TabList } from '@mui/lab';
 import { paths } from '../enums/paths.tsx';
 import { format } from 'date-fns';
 import { UserMeeting } from '../enums/types.tsx';
+import MeetingDetails from './MeetingDetails.tsx';
+import { getMeetingDetails } from '../api/meeting.ts';
+import { MeetingDetailsType } from '../api/types/meeting.ts';
+import ToastComponent from './ToastComponent.tsx';
 
 const monthsMap = new Map<number, string>([
   [0, 'JANUARY'],
@@ -55,6 +59,10 @@ export const CalendarComponent = () => {
   const [selected, setSelected] = useState<Dayjs>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>('3');
+  const [showMeetingDetailsModal, setShowMeetingDetailsModal] = useState<boolean>(false);
+  const [meetingDetails, setMeetingDetails] = useState<MeetingDetailsType>();
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
@@ -97,7 +105,9 @@ export const CalendarComponent = () => {
                         <p
                           key={`${index}`}
                           className="text-[0.5rem] text-night truncate bg-paynes-gray-700/50 rounded-md px-2 hover:scale-105 z-10"
-                          onClick={handleMeetingClickInCalendar}
+                          onClick={(event: MouseEvent<HTMLElement>) =>
+                            handleMeetingClickInCalendar(event, meeting.meetingID)
+                          }
                         >
                           • {meeting.title}
                         </p>
@@ -137,6 +147,7 @@ export const CalendarComponent = () => {
             tmpFriends.push(<option value={`${friend.email}`} />);
           }
         }
+
         setUserFriends(tmpFriends);
       })
     );
@@ -170,11 +181,16 @@ export const CalendarComponent = () => {
     setTabValue(newTabValue);
   };
 
-
-  const handleMeetingClickInCalendar = (event: MouseEvent<HTMLElement>) => {
+  const handleMeetingClickInCalendar = async (
+    event: MouseEvent<HTMLElement>,
+    meetingId: string
+  ) => {
     if (event && event.stopPropagation) event.stopPropagation();
 
-    console.log('go to the meeting');
+    const result = await getMeetingDetails(meetingId);
+
+    setMeetingDetails(result[0]);
+    setShowMeetingDetailsModal(true);
   };
 
   const formik = useFormik<FormDataType>({
@@ -190,7 +206,6 @@ export const CalendarComponent = () => {
     validationSchema: validationSchema,
     onSubmit: (values: any) => {
       values.members = values.members.filter((guest: string) => guest !== '');
-
       const url = `${paths.apiUrlLocal}/complex/createMeeting`;
       const options = {
         method: 'POST',
@@ -215,6 +230,9 @@ export const CalendarComponent = () => {
           setModalOpen(false);
         })
       );
+
+      setShowToast(true);
+      setToastMessage('Meeting added successfully.');
     },
   });
 
@@ -284,145 +302,192 @@ export const CalendarComponent = () => {
         disableAutoFocus
         className="absolute flex items-center justify-center"
       >
-        <FormGroup className="flex lg:w-6/12 md:w-8/12 w-11/12 max-h-[80vh] overflow-hidden items-center bg-anti-flash-white py-8 rounded-3xl">
+        <FormGroup className="md:w-7/12 w-11/12 h-fit items-center bg-anti-flash-white p-8 rounded-3xl">
+          <h3 className="text-3xl">Add a meeting</h3>
           <LocalizationProvider adapterLocale="en-gb" dateAdapter={AdapterDayjs}>
-            <section className="w-full flex justify-center px-4 overflow-y-auto">
-              <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
-                <h3 className="text-3xl flex justify-center">Add a meeting</h3>
-                <Stack direction={'column'} className="flex flex-col gap-4 p-8">
-                  <TextField
-                    autoComplete={'off'}
-                    label="Title"
-                    name="title"
-                    value={formik.values.title}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.title && Boolean(formik.errors.title)}
-                    helperText={formik.touched.title && formik.errors.title}
-                    required
-                  />
-                  <TextField
-                    autoComplete={'off'}
-                    label="Description"
-                    name="description"
-                    value={formik.values.description}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.description && Boolean(formik.errors.description)}
-                    helperText={formik.touched.description && formik.errors.description}
-                  />
-                  <TextField
-                    autoComplete={'off'}
-                    label="Link"
-                    name="link"
-                    value={formik.values.link}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.link && Boolean(formik.errors.link)}
-                    helperText={formik.touched.link && formik.errors.link}
-                    required
-                  />
+            <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
+              <Stack direction={'column'} className="flex flex-col gap-4 p-8">
+                <TextField
+                  autoComplete={'off'}
+                  label="Title"
+                  name="title"
+                  value={formik.values.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.title && Boolean(formik.errors.title)}
+                  helperText={formik.touched.title && formik.errors.title}
+                  required
+                />
+                <TextField
+                  autoComplete={'off'}
+                  label="Description"
+                  name="description"
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.description && Boolean(formik.errors.description)}
+                  helperText={formik.touched.description && formik.errors.description}
+                  required
+                />
+                <TextField
+                  autoComplete={'off'}
+                  label="Link"
+                  name="link"
+                  value={formik.values.link}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.link && Boolean(formik.errors.link)}
+                  helperText={formik.touched.link && formik.errors.link}
+                  required
+                />
 
-                  <Formik initialValues={formik.initialValues} onSubmit={() => {}}>
-                    {({ values }) => (
-                      // @ts-ignore
-                      <FieldArray name="members" value={formik.values.members}>
-                        {({ push, remove }) => (
-                          <>
-                            {values.members.map((guest, index) => (
-                              <div key={`guest-${index}`}>
-                                <div key={index} className="flex flex-row">
-                                  {/* <input
-                                                                        autoComplete={'off'}
-                                                                        name={`members.${index}`}
-                                                                        placeholder="Enter guest email"
-                                                                        type="email" // Set type as email for email validation
-                                                                        list="friendOptions"
-                                                                    /> */}
-                                  <TextField
-                                    autoComplete={'off'}
-                                    label="guest"
-                                    name={`members.${index}`}
-                                    type="email"
-                                  />
-                                  <datalist id="friendOptions">{userFriends}</datalist>
+                <Formik initialValues={formik.initialValues} onSubmit={() => {}}>
+                  {({ values }) => (
+                    // @ts-ignore
+                    // <FieldArray name="members" value={formik.values.members}>
+                    //   {({ push, remove }) => (
+                    //     <React.Fragment>
+                    //       {values.members.map((guest, index) => (
+                    //         <div key={`guest-${index}`}>
+                    //           <div key={index}>
+                    //             <input
+                    //               autoComplete={"off"}
+                    //               name={`members.${index}`}
+                    //               placeholder="Enter guest email"
+                    //               type="email" // Set type as email for email validation
+                    //               list="friendOptions"
+                    //             />
+                    //             <datalist id="friendOptions">
+                    //               {userFriends}
+                    //             </datalist>
+                    //             <Button
+                    //               type="button"
+                    //               onClick={() => {
+                    //                 formik.values.members.splice(index);
+                    //                 remove(index);
+                    //               }}
+                    //             >
+                    //               Remove
+                    //             </Button>
+                    //           </div>
 
-                                  <Button
-                                    type="button"
-                                    onClick={() => {
-                                      formik.values.members.splice(index);
-                                      remove(index);
-                                    }}
-                                  >
-                                    Remove
-                                  </Button>
-                                </div>
+                    //           <Button
+                    //             type="button"
+                    //             onClick={() => {
+                    //               formik.values.members.push(guest);
+                    //               push("");
+                    //             }}
+                    //           >
+                    //             Add Guest
+                    //           </Button>
+                    //         </div>
+                    //       ))}
+                    //     </React.Fragment>
+                    //   )}
+                    // </FieldArray>
+                    <FieldArray name="members" value={formik.values.members}>
+                      {({ push, remove }) => (
+                        <>
+                          {values.members.map((_, index) => (
+                            <div key={`guest-${index}`}>
+                              <div key={index} className="flex flex-row">
+                                <TextField
+                                  autoComplete={'off'}
+                                  label="guest"
+                                  name={`members.${index}`}
+                                  type="email"
+                                  value={formik.values.members[index]}
+                                  onChange={(e) => {
+                                    const updatedMembers = [...formik.values.members];
+                                    updatedMembers[index] = e.target.value;
+                                    formik.setFieldValue('members', updatedMembers);
+                                  }}
+                                />
+                                <datalist id="friendOptions">{userFriends}</datalist>
 
                                 <Button
                                   type="button"
                                   onClick={() => {
-                                    formik.values.members.push(guest);
-                                    push('');
+                                    remove(index);
                                   }}
                                 >
-                                  Add Guest
+                                  Remove
                                 </Button>
                               </div>
-                            ))}
-                          </>
-                        )}
-                      </FieldArray>
-                    )}
-                  </Formik>
 
-                  <DatePicker
-                    label="Date"
-                    name="date"
-                    value={formik.values.date ? formik.values.date : dayjs()}
-                    onChange={(value) => formik.setFieldValue('date', value, true)}
-                  />
+                              <Button
+                                type="button"
+                                onClick={() => {
+                                  push('');
+                                }}
+                              >
+                                Add Guest
+                              </Button>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </FieldArray>
+                  )}
+                </Formik>
 
-                  <TimePicker
-                    label="From"
-                    name="from"
-                    value={formik.values.from}
-                    onChange={formik.handleChange}
-                    timezone={'system'}
-                    viewRenderers={{
-                      hours: renderTimeViewClock,
-                      minutes: renderTimeViewClock,
-                    }}
-                  />
-                  <TimePicker
-                    label="To"
-                    name="to"
-                    value={formik.values.to}
-                    onChange={formik.handleChange}
-                    timezone={'system'}
-                    viewRenderers={{
-                      hours: renderTimeViewClock,
-                      minutes: renderTimeViewClock,
-                    }}
-                  />
-                </Stack>
-                <Stack direction={'row'} className="w-full flex justify-between gap-2 px-8 pb-8">
-                  <Button variant={'outlined'} onClick={handleClose} className="w-full">
-                    Cancel
-                  </Button>
-                  <Button
-                    variant={'contained'}
-                    type="submit"
-                    endIcon={<AddBox />}
-                    className="w-full"
-                  >
-                    Add
-                  </Button>
-                </Stack>
-              </form>
-            </section>
+                <DatePicker
+                  label="Date"
+                  name="date"
+                  value={formik.values.date ? formik.values.date : dayjs()}
+                  onChange={(value) => formik.setFieldValue('date', value, true)}
+                />
+
+                <TimePicker
+                  label="From"
+                  name="from"
+                  value={formik.values.from}
+                  onChange={formik.handleChange}
+                  timezone={'system'}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                />
+                <TimePicker
+                  label="To"
+                  name="to"
+                  value={formik.values.to}
+                  onChange={formik.handleChange}
+                  timezone={'system'}
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                  }}
+                />
+              </Stack>
+              <Stack direction={'row'} className="w-full flex justify-between gap-2 px-8 pb-8">
+                <Button variant={'outlined'} onClick={handleClose} className="w-full">
+                  Cancel
+                </Button>
+                <Button variant={'contained'} type="submit" endIcon={<AddBox />} className="w-full">
+                  Add
+                </Button>
+              </Stack>
+            </form>
           </LocalizationProvider>
         </FormGroup>
       </Modal>
+
+      {meetingDetails && (
+        <MeetingDetails
+          showModal={showMeetingDetailsModal}
+          onClose={() => setShowMeetingDetailsModal(false)}
+          meeting={meetingDetails}
+        />
+      )}
+      <ToastComponent
+        message={toastMessage}
+        open={showToast}
+        onClose={() => {
+          setShowToast(false);
+        }}
+      />
     </article>
   );
 };
