@@ -10,7 +10,7 @@ type ToastProps = {
 const ToastComponent = (props: ToastProps) => {
   return (
     <Snackbar
-      autoHideDuration={props.duration || 1000}
+      autoHideDuration={props.duration}
       open={props.open}
       onClose={props.onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
