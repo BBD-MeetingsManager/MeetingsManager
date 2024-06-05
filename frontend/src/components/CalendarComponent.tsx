@@ -379,7 +379,7 @@ export const CalendarComponent = () => {
                     <FieldArray name="members" value={formik.values.members}>
                       {({ push, remove }) => (
                         <React.Fragment>
-                          {values.members.map((guest, index) => (
+                          {values.members.map((_, index) => (
                             <div key={`guest-${index}`}>
                               <div key={index}>
                                 <input
