@@ -14,4 +14,5 @@ export interface MeetingInviteType {
     description: string,
     startTime: string,
     endTime: string,
+    updateInvites: () => void
 }
