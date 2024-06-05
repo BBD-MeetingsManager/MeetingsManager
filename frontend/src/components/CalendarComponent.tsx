@@ -75,6 +75,7 @@ export const CalendarComponent = () => {
   const [selected, setSelected] = useState<Dayjs>();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>("3");
+  const [getFriendsCount, setGetFriendsCount] = useState<number>(0);
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
@@ -162,7 +163,7 @@ export const CalendarComponent = () => {
         setUserFriends(tmpFriends);
       })
     );
-  }, []);
+  }, [getFriendsCount]);
 
   const mergeDateTime = (date: Dayjs, time: Dayjs) => {
     const [year, month, day] = format(new Date(date.toDate()), "yyyy-MM-dd")
@@ -185,10 +186,7 @@ export const CalendarComponent = () => {
 
   const handleCardClick = (date: Dayjs) => {
     setSelected(date);
-    setModalOpen(true);
-  };
-  const handleClose = () => {
-    setModalOpen(false);
+    handleOpen();
   };
 
   const handleTabChange = (
@@ -238,12 +236,21 @@ export const CalendarComponent = () => {
       fetch(url.toString(), options).then((result) =>
         result.json().then((asJson) => {
           console.log("response", asJson);
-          formik.resetForm();
-          setModalOpen(false);
+          handleClose();
         })
       );
     },
   });
+
+  const handleOpen = () => {
+    setGetFriendsCount(getFriendsCount + 1);
+    setModalOpen(true);
+  }
+
+  const handleClose = () => {
+    formik.resetForm();
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     formik.setFieldValue("date", selected, true);
@@ -381,6 +388,12 @@ export const CalendarComponent = () => {
                                   placeholder="Enter guest email"
                                   type="email" // Set type as email for email validation
                                   list="friendOptions"
+                                  value={formik.values.members[index]}
+                                  onChange={(e) => {
+                                    const updatedMembers = [...formik.values.members];
+                                    updatedMembers[index] = e.target.value;
+                                    formik.setFieldValue("members", updatedMembers);
+                                  }}
                                 />
                                 <datalist id="friendOptions">
                                   {userFriends}
@@ -388,7 +401,6 @@ export const CalendarComponent = () => {
                                 <Button
                                   type="button"
                                   onClick={() => {
-                                    formik.values.members.splice(index);
                                     remove(index);
                                   }}
                                 >
@@ -399,7 +411,6 @@ export const CalendarComponent = () => {
                               <Button
                                 type="button"
                                 onClick={() => {
-                                  formik.values.members.push(guest);
                                   push("");
                                 }}
                               >
