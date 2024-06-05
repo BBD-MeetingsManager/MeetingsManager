@@ -79,7 +79,6 @@ const Navbar = (props: NavbarProps) => {
                                     startTime={meeting.startTime}
                                     endTime={meeting.endTime}
                                     updateInvites={() => {
-                                        console.log("called update invite");
                                         setGetMeetingInvitesCount(prevState => prevState + 1);
                                         props.updateStateFunction();
                                     }}
