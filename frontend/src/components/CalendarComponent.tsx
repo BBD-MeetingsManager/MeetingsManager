@@ -56,6 +56,7 @@ export const CalendarComponent = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>('3');
   const [getFriendsCount, setGetFriendsCount] = useState<number>(0);
+  const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
 
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
@@ -112,7 +113,7 @@ export const CalendarComponent = () => {
         setUpcomingMeetings(calendarMeetings);
       })
     );
-  }, []);
+  }, [getUpcomingMeetingsCount]);
 
   const [userFriends, setUserFriends] = useState<JSX.Element[]>([]);
 
@@ -207,8 +208,11 @@ export const CalendarComponent = () => {
       };
 
       fetch(url.toString(), options).then((result) =>
-        result.json().then((asJson) => {
-          handleClose();
+        result.json().
+          then(asJson => {
+            console.log("Created meeting", asJson)
+            handleClose();
+            setGetUpcomingMeetingsCount(prevState => prevState + 1);
         })
       );
     },
