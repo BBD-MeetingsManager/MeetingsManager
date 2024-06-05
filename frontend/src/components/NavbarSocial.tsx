@@ -15,6 +15,7 @@ const validationSchema = yup.object({
 const NavbarSocial = () => {
     const token = localStorage.getItem("id_token");
 
+    const [getFriendRequestCount, setGetFriendRequestCount] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     const formik = useFormik<FormDataType>({
@@ -68,6 +69,7 @@ const NavbarSocial = () => {
             .then(result => result.json()
                 .then(asJson => {
                     console.log("response, friend request changed", asJson);
+                    setGetFriendRequestCount(getFriendRequestCount + 1);
                 }));
     }
 
@@ -105,7 +107,7 @@ const NavbarSocial = () => {
 
                         setFriendInvites(tmpFriends);
                     }));
-        }, []
+        }, [getFriendRequestCount]
     );
 
     return (
