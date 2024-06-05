@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "npm run build"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
