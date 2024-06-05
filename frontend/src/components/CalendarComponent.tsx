@@ -388,7 +388,10 @@ export const CalendarComponent = () => {
                     label="Date"
                     name="date"
                     value={formik.values.date ? formik.values.date : dayjs()}
-                    onChange={(value) => formik.setFieldValue('date', value, true)}
+                    onChange={(value) => {
+                      formik.setFieldValue('date', value, true);
+                      setSelected(value || dayjs());
+                    }}
                   />
 
                   <TimePicker
