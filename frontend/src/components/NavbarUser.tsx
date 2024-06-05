@@ -69,8 +69,6 @@ const NavbarUser = () => {
             if (!token){
                 return;
             }
-            
-            console.log("get details called");
 
             const options = {
                 method: "GET",
