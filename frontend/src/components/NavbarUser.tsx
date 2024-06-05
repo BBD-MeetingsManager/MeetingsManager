@@ -4,6 +4,7 @@ import {useFormik} from "formik";
 import * as yup from "yup";
 import React, {useState} from "react";
 import {AddBox, Edit} from "@mui/icons-material";
+import ToastComponent from "./ToastComponent.tsx";
 
 type UserInformation = {
     email: string,
@@ -17,6 +18,9 @@ const validationSchema = yup.object({
 });
 
 const NavbarUser = () => {
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>('');
+
     const token = localStorage.getItem("id_token");
 
     const [userInformation, setUserInformation] = useState<UserInformation>({
@@ -46,16 +50,32 @@ const NavbarUser = () => {
             };
 
             fetch(url, options)
-                .then(result => result.json()
-                    .then(asJson => {
-                        // Todo, add toasts here
-                        if (asJson.hasOwnProperty('alert')) console.log("username already in use");
-                        else {
-                            console.log("successfully edited username", asJson);
-                            setGetDetailsCount(prevState => prevState + 1);
-                            handleClose();
-                        }
-                    }));
+                .then(result => {
+                    if (!result.ok) {
+                        setShowToast(true);
+                        setToastMessage('There was an error trying to change your username. Please try again later.');
+
+                        handleClose();
+                    }
+                    else {
+                        result.json()
+                            .then(asJson => {
+                                if (asJson.hasOwnProperty('alert')) {
+                                    setShowToast(true);
+                                    setToastMessage('That username is already in use.');
+
+                                    handleClose();
+                                }
+                                else {
+                                    setShowToast(true);
+                                    setToastMessage('Successfully changed your username.');
+
+                                    setGetDetailsCount(prevState => prevState + 1);
+                                    handleClose();
+                                }
+                            });
+                    }
+                });
         },
     },);
 
@@ -79,14 +99,21 @@ const NavbarUser = () => {
 
             const url = `${paths.apiUrlLocal}/user/getMyDetails`;
             fetch(url, options)
-                .then(result => result.json()
-                    .then(user => {
-                        console.log("got user", user);
-                        setUserInformation({
-                            email: user[0].email,
-                            username: user[0].username ?? 'anonymous'
-                        });
-                    }));
+                .then(result => {
+                    if (!result.ok) {
+                        setShowToast(true);
+                        setToastMessage('There was an error getting your user details. Please try again later.');
+                    }
+                    else {
+                        result.json()
+                            .then(user => {
+                                setUserInformation({
+                                    email: user[0].email,
+                                    username: user[0].username ?? 'anonymous'
+                                });
+                            });
+                    }
+                });
         },
         [getDetailsCount]
     );
@@ -120,6 +147,15 @@ const NavbarUser = () => {
                         </form>
                     </FormGroup>
                 </Modal>
+
+                <ToastComponent
+                    duration={1500}
+                    message={toastMessage}
+                    open={showToast}
+                    onClose={() => {
+                        setShowToast(false);
+                    }}
+                />
             </div>
         )
     }
