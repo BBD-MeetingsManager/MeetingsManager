@@ -38,6 +38,14 @@ type FormDataType = {
   from: Dayjs;
   to: Dayjs;
 };
+  title: string;
+  description: string;
+  link: string;
+  members: [string];
+  date: Dayjs;
+  from: Dayjs;
+  to: Dayjs;
+};
 
 const validationSchema = yup.object({
   title: yup.string().max(50).required('This field is required'),
@@ -56,6 +64,7 @@ export const CalendarComponent = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>('3');
 
+  const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
@@ -112,7 +121,12 @@ export const CalendarComponent = () => {
       })
     );
   }, []);
+        setUpcomingMeetings(calendarMeetings);
+      })
+    );
+  }, []);
 
+  const [userFriends, setUserFriends] = useState<JSX.Element[]>([]);
   const [userFriends, setUserFriends] = useState<JSX.Element[]>([]);
 
   React.useEffect(() => {
@@ -131,7 +145,16 @@ export const CalendarComponent = () => {
     fetch(url, options).then((result) =>
       result.json().then((friends) => {
         const tmpFriends = [];
+    const url = `${paths.apiUrlLocal}/complex/getFriendsForUser`;
+    fetch(url, options).then((result) =>
+      result.json().then((friends) => {
+        const tmpFriends = [];
 
+        if (Array.isArray(friends)) {
+          for (const friend of friends) {
+            tmpFriends.push(<option value={`${friend.email}`} />);
+          }
+        }
         if (Array.isArray(friends)) {
           for (const friend of friends) {
             tmpFriends.push(<option value={`${friend.email}`} />);
@@ -140,7 +163,10 @@ export const CalendarComponent = () => {
 
         setUserFriends(tmpFriends);
       })
+        setUserFriends(tmpFriends);
+      })
     );
+  }, []);
   }, []);
 
   const mergeDateTime = (date: Dayjs, time: Dayjs) => {
@@ -166,11 +192,20 @@ export const CalendarComponent = () => {
   const handleClose = () => {
     setModalOpen(false);
   };
+  const handleCardClick = (date: Dayjs) => {
+    setSelected(date);
+    setModalOpen(true);
+  };
+  const handleClose = () => {
+    setModalOpen(false);
+  };
 
   const handleTabChange = (_event: React.SyntheticEvent, newTabValue: string) => {
     setTabValue(newTabValue);
   };
 
+  const handleMeetingClickInCalendar = (event: MouseEvent<HTMLElement>) => {
+    if (event && event.stopPropagation) event.stopPropagation();
   const handleMeetingClickInCalendar = (event: MouseEvent<HTMLElement>) => {
     if (event && event.stopPropagation) event.stopPropagation();
 
