@@ -16,6 +16,7 @@ const Home = () => {
     }
   }, [navigate]);
 
+  const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
   const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
@@ -64,11 +65,13 @@ const Home = () => {
         }
       })
     );
-  }, []);
+  }, [getUpcomingMeetingsCount]);
 
   return (
     <div>
-      <Navbar />
+      <Navbar
+          updateStateFunction={() => {setGetUpcomingMeetingsCount(prevState => prevState + 1)}}
+      />
       <main className="w-full h-screen pt-16 bg-anti-flash-white">
         <section className="w-full grid grid-cols-2 gap-4 p-8">
           <section className="w-10/12 h-full p-4 bg-paynes-gray-700/30 rounded-xl shadow-xl">
@@ -76,7 +79,7 @@ const Home = () => {
             <List className="gap-2">{upcomingMeetings}</List>
           </section>
           <section className="w-full">
-            <CalendarComponent />
+            <CalendarComponent updateTrigger={getUpcomingMeetingsCount} />
           </section>
         </section>
       </main>
