@@ -5,6 +5,7 @@ import * as yup from "yup";
 import React, {useState} from "react";
 import {AddBox, CircleNotifications} from "@mui/icons-material";
 import './Navbar.css';
+import ToastComponent from "./ToastComponent.tsx";
 
 type FormDataType = { email: string; }
 
@@ -13,6 +14,9 @@ const validationSchema = yup.object({
 });
 
 const NavbarSocial = () => {
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>('');
+
     const token = localStorage.getItem("id_token");
 
     const [getFriendRequestCount, setGetFriendRequestCount] = useState<number>(0);
@@ -25,6 +29,7 @@ const NavbarSocial = () => {
         validationSchema: validationSchema,
         onSubmit: (values: FormDataType) => {
             const url = `${paths.apiUrlLocal}/friends/makeRequest`
+
             const options = {
                 method: "POST",
                 headers: {
@@ -38,20 +43,23 @@ const NavbarSocial = () => {
 
             fetch(url, options)
                 .then(result => {
-                    if (!result.ok) {
-                        console.log("Unsuccessfully sent friend request", result);
-                        handleClose();
-                    }
-                    else {
-                        result.json()
-                            .then(asJson => {
-                                //Todo, add toast
-                                console.log("Successfully sent friend request", asJson);
-                                handleClose();
-                            });
-                    }
-                });
+                    result.json()
+                        .then(asJson => {
+                            if (!result.ok) {
+                                setShowToast(true);
+                                setToastMessage('There was an error trying to make your friend request. Please try again later.');
 
+                                handleClose();
+                            }
+                            else {
+                                setShowToast(true);
+                                setToastMessage(`${asJson.hasOwnProperty('alert')
+                                    ? asJson.alert
+                                    : 'Successfully sent your friend request.'}`);
+                                handleClose();
+                            }
+                        });
+                });
         },
     },);
 
@@ -61,6 +69,7 @@ const NavbarSocial = () => {
     }
 
     const handleFriendRequest = (isRejected: boolean, senderEmail: string) => {
+        const condition = isRejected ? 'rejected ' : 'accepted;'
         const url = `${paths.apiUrlLocal}/friends/handleRequest`
         const options = {
             method: "PUT",
@@ -77,8 +86,18 @@ const NavbarSocial = () => {
         fetch(url.toString(), options)
             .then(result => result.json()
                 .then(asJson => {
-                    console.log("response, friend request changed", asJson);
-                    setGetFriendRequestCount(prevState => prevState + 1);
+                    if (!result.ok) {
+                        setShowToast(true);
+                        setToastMessage('There was an error handling that friend request, please try again later.');
+                    }
+                    else {
+                        setShowToast(true);
+                        setToastMessage(`${asJson.hasOwnProperty('alert')
+                            ? asJson.alert
+                            : `Successfully ${condition} that friend request.`}`);
+
+                        setGetFriendRequestCount(prevState => prevState + 1);
+                    }
                 }));
     }
 
@@ -99,18 +118,24 @@ const NavbarSocial = () => {
                     .then(friends => {
                         const tmpFriends = [];
 
-                        if (Array.isArray(friends)) {
-                            for (const friend of friends){
-                                tmpFriends.push(
-                                    <div
-                                        key={`friend-${friend.email}`}
-                                        style={{border: '1px solid black'}}
-                                    >
-                                        <p>{`From: ${friend.email}`}</p>
-                                        <button onClick={() => handleFriendRequest(true, friend.email)} type="button">Reject</button>
-                                        <button onClick={() => handleFriendRequest(false, friend.email)} type="button">Accept</button>
-                                    </div>
-                                );
+                        if (!result.ok) {
+                            setShowToast(true);
+                            setToastMessage('There was an error getting your friend requests. Please try again later.');
+                        }
+                        else {
+                            if (Array.isArray(friends)) {
+                                for (const friend of friends){
+                                    tmpFriends.push(
+                                        <div
+                                            key={`friend-${friend.email}`}
+                                            style={{border: '1px solid black'}}
+                                        >
+                                            <p>{`From: ${friend.email}`}</p>
+                                            <button onClick={() => handleFriendRequest(true, friend.email)} type="button">Reject</button>
+                                            <button onClick={() => handleFriendRequest(false, friend.email)} type="button">Accept</button>
+                                        </div>
+                                    );
+                                }
                             }
                         }
 
@@ -143,7 +168,8 @@ const NavbarSocial = () => {
                              <TextField label='Email' name="email" value={formik.values.email}
                                         onChange={formik.handleChange} onBlur={formik.handleBlur}
                                         error={formik.touched.email && Boolean(formik.errors.email)}
-                                        helperText={formik.touched.email && formik.errors.email} required/>
+                                        helperText={formik.touched.email && formik.errors.email}
+                                        autoComplete={'off'} required/>
                          </Stack>
 
                          <Stack direction={'row'} className="w-full flex justify-between gap-2 px-8 pb-8">
@@ -153,6 +179,15 @@ const NavbarSocial = () => {
                      </form>
                  </FormGroup>
              </Modal>
+
+            <ToastComponent
+                duration={1500}
+                message={toastMessage}
+                open={showToast}
+                onClose={() => {
+                    setShowToast(false);
+                }}
+            />
          </div>
     );
 }
