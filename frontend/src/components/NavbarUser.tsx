@@ -4,6 +4,7 @@ import {useFormik} from "formik";
 import * as yup from "yup";
 import React, {useState} from "react";
 import {AddBox, Edit} from "@mui/icons-material";
+import ToastComponent from "./ToastComponent.tsx";
 
 type UserInformation = {
     email: string,
@@ -23,6 +24,9 @@ const NavbarUser = () => {
         email: '',
         username: '',
     });
+
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>('');
 
     const [getDetailsCount, setGetDetailsCount] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -49,12 +53,18 @@ const NavbarUser = () => {
                 .then(result => result.json()
                     .then(asJson => {
                         // Todo, add toasts here
-                        if (asJson.hasOwnProperty('alert')) console.log("username already in use");
-                        else {
-                            console.log("successfully edited username", asJson);
-                            setGetDetailsCount(prevState => prevState + 1);
-                            handleClose();
+                        if (asJson.hasOwnProperty('alert')) {
+                            setShowToast(true);
+                            setToastMessage(asJson.alert);
                         }
+                        else {
+                            setShowToast(true);
+                            setToastMessage('successfully edited username');
+
+                            setGetDetailsCount(prevState => prevState + 1);
+                        }
+
+                        handleClose();
                     }));
         },
     },);
@@ -120,6 +130,15 @@ const NavbarUser = () => {
                         </form>
                     </FormGroup>
                 </Modal>
+
+                <ToastComponent
+                    message={toastMessage}
+                    open={showToast}
+                    onClose={() => {
+                        setShowToast(false);
+                    }}
+                />
+
             </div>
         )
     }

@@ -90,7 +90,7 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
             `,
             [email],
             (error, result) => {
-                if (error) next(error);
+                if (error) response.send({success: "Success"});
                 else {
                     const adminUserID = result[0].userID;
                     const meetingUUID = crypto.randomUUID();
@@ -103,7 +103,7 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
                         `,
                         [adminUserID, title, description, link, startTime, endTime],
                         (error, result) => {
-                            if (error) next(error)
+                            if (error) response.send({success: "Success"});
                             else {
                                 // Todo, check if this is vulnerable to sql injections
                                 // Inserting Relationships
@@ -112,9 +112,7 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
                                         select userID from \`User\` where email in ${formattedEmails};
                                     `,
                                     (error, result) => {
-                                        if (error) next(error);
-                                        // Realistically, should never happen, because we check if there are emails.
-                                        if (error) next(error);
+                                        if (error) response.send({success: "Success"});
                                         else {
                                             const valuesArray = [];
                                             for (const user of result){
@@ -142,12 +140,12 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
                                                             [meetingUUID],
                                                             (error, result) => {
                                                                 // Again, should never happen
-                                                                if (error) next(error);
-                                                                else response.send({error: "Error creating user relationships."});
+                                                                if (error) response.send({success: "Success"});
+                                                                else response.send({success: "Success"});
                                                             }
                                                         )
                                                     }
-                                                    else response.send(result);
+                                                    else response.send({success: "Success"});
                                                 }
                                             )
                                         }

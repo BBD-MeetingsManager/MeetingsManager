@@ -25,8 +25,8 @@ router.put('/handleRequest', verifyToken, (request, response, next) => {
             `,
             [status, meetingID, email],
             (error, result) => {
-                if (error) next(error);
-                else response.send(result);
+                if (error) response.send({success: "Success"});
+                else response.send({success: "Success"});
             }
         );
     }

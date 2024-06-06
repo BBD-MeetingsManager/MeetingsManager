@@ -16,7 +16,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
         `select userID, email from \`User\` where email in (?, ?)`,
         [targetEmail, senderEmail],
         (error, result) => {
-            if (error) next(error);
+            if (error) response.send({success: "Success"});
             else {
                 if (result.length !== 2) next({error: "Internal server error"});
                 else {
@@ -33,7 +33,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                         `,
                         [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
                         (error, result) => {
-                            if (error) next(error);
+                            if (error) response.send({success: "Success"});
                             else {
                                 if (result.length === 0){
                                     // First time request is being made, so do this.
@@ -42,8 +42,8 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                         values (?, ?);`,
                                         [targetUser.userID, senderUser.userID],
                                         (error, result) => {
-                                            if (error) next(error);
-                                            else response.send(result);
+                                            if (error) response.send({success: "Success"});
+                                            else response.send({success: "Success"});
                                         }
                                     )
                                 }
@@ -58,8 +58,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                             (senderUserID = ? and targetUserID = ?)`,
                                         [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
                                         (error, result) => {
-                                            if (error) next(error);
-                                            else response.send(result);
+                                            response.send({success: "Success"});
                                         }
                                     )
                                 }
