@@ -14,8 +14,8 @@ const Navbar = (props: NavbarProps) => {
   const hostedUiURL = 'https://meeting-manager.auth.eu-west-1.amazoncognito.com';
   const clientID = '5hv4ev8ff59uqven58ifeddtom';
   const scopes = 'email openid phone';
-  const redirectUriLogIn = 'http://localhost:5173/redirect';
-  const redirectUriSignOut = 'http://localhost:5173/sign-out';
+  const redirectUriLogIn = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/redirect';
+  const redirectUriSignOut = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/sign-out';
 
   const isLoggedIn = localStorage.getItem('id_token') != null;
 

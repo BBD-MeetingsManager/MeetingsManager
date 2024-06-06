@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:8080';
 
 export const getMeetingDetails = async (meetingID: string) => {
   const result = await fetch(`${BASE_URL}/complex/getMeetingDetails?meetingID=${meetingID}`, {
