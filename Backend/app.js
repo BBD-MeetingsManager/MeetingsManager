@@ -13,7 +13,7 @@ const cors = require('cors');
 const app = express();
 
 
-const allowedOrigins = ['https://d1lqgsjp7egbpp.cloudfront.net']; 
+/*const allowedOrigins = ['https://d1lqgsjp7egbpp.cloudfront.net']; 
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -25,7 +25,9 @@ const corsOptions = {
   }
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));*/
+
+app.use(cors());
 
 // This allows us to read the request body as JSON
 app.use(express.json());
