@@ -9,6 +9,9 @@ const clientSecret = process.env.CLIENT_SECRET;
 router.get('/getAccessToken', async (request, response, next) => {
     const {code} = request.query;
 
+    // const redirect = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/redirect';
+    const redirect = 'http://localhost:5173/redirect';
+
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
     const url = new URL(`${hostedUiURL}/oauth2/token`);
 
@@ -16,7 +19,7 @@ router.get('/getAccessToken', async (request, response, next) => {
     queryParameters.append("grant_type", "authorization_code");
     queryParameters.append("client_id", clientID);
     queryParameters.append("code", code);
-    queryParameters.append("redirect_uri", encodeURI('http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/redirect'));
+    queryParameters.append("redirect_uri", encodeURI(redirect));
     queryParameters.append("client_secret", clientSecret);
 
     url.search = queryParameters.toString();

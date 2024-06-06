@@ -1,4 +1,4 @@
-import { CalendarMonth, Menu } from '@mui/icons-material';
+import {CalendarMonth, Edit, Groups, Menu} from '@mui/icons-material';
 import { Box, AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import './Navbar.css';
@@ -14,8 +14,6 @@ const Navbar = (props: NavbarProps) => {
   const hostedUiURL = 'https://meeting-manager.auth.eu-west-1.amazoncognito.com';
   const clientID = '5hv4ev8ff59uqven58ifeddtom';
   const scopes = 'email openid phone';
-  const redirectUriLogIn = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/redirect';
-  const redirectUriSignOut = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/sign-out';
 
   const isLoggedIn = localStorage.getItem('id_token') != null;
 
@@ -27,7 +25,7 @@ const Navbar = (props: NavbarProps) => {
       queryParams.append('client_id', clientID);
       queryParams.append('response_type', 'code');
       queryParams.append('scope', scopes);
-      queryParams.append('redirect_uri', redirectUriLogIn);
+      queryParams.append('redirect_uri', paths.redirectLogIn);
       url.search = queryParams.toString();
 
       window.location.href = url.toString();
@@ -38,7 +36,7 @@ const Navbar = (props: NavbarProps) => {
     const url = new URL(`${hostedUiURL}/logout`);
     const queryParams = new URLSearchParams();
     queryParams.append('client_id', clientID);
-    queryParams.append('logout_uri', redirectUriSignOut);
+    queryParams.append('logout_uri', paths.redirectSignOut);
     url.search = queryParams.toString();
 
     window.location.href = url.toString();
@@ -117,7 +115,13 @@ const Navbar = (props: NavbarProps) => {
                 <NavbarUser />
                 <NavbarSocial />
                 <div className="dropdown">
-                  <button className="dropbtn">Dropdown</button>
+                  <Button
+                      className="dropbtn"
+                      color="inherit"
+                      endIcon={<Groups />}
+                  >
+                    {`Meeting Invites`}
+                  </Button>
                   <div className="dropdown-content text-charcoal-100">{meetingInvites}</div>
                 </div>
               </section>
