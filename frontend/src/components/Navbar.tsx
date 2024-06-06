@@ -15,10 +15,6 @@ const Navbar = (props: NavbarProps) => {
   const hostedUiURL = 'https://meeting-manager.auth.eu-west-1.amazoncognito.com';
   const clientID = '5hv4ev8ff59uqven58ifeddtom';
   const scopes = 'email openid phone';
-  const redirectUriLogIn =
-    'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/redirect';
-  const redirectUriSignOut =
-    'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:5173/sign-out';
 
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -178,42 +174,6 @@ const Navbar = (props: NavbarProps) => {
         }}
       />
     </>
-  );
-  return (
-    <React.Fragment>
-      <Box>
-        <AppBar className="absolute top-0">
-          <Toolbar>
-            <IconButton
-              size="large"
-              // edge="end"
-              color="inherit"
-              sx={{ mr: 2 }}
-              href="/"
-            >
-              <CalendarMonth />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Meeting Manager
-            </Typography>
-            {isLoggedIn && (
-              <section className="flex flex-row gap-4 items-center justify-end">
-                <NavbarUser />
-                <NavbarSocial />
-                <div className="dropdown">
-                  <button className="dropbtn">Dropdown</button>
-                  <div className="dropdown-content">{meetingInvites}</div>
-                </div>
-              </section>
-            )}
-            <Button
-              color="inherit"
-              onClick={buttonOnClick}
-            >{`${isLoggedIn ? 'Sign Out' : 'Log In'}`}</Button>
-          </Toolbar>
-        </AppBar>
-      </Box>
-    </React.Fragment>
   );
 };
 
