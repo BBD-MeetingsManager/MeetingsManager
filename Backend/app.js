@@ -12,7 +12,7 @@ const express = require("express");
 const cors = require('cors');
 const app = express();
 
-const allowedOrigins = ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net', 'https://meeting-manager.auth.eu-west-1.amazoncognito.com'];
+/*const allowedOrigins = ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net', 'https://meeting-manager.auth.eu-west-1.amazoncognito.com'];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -24,7 +24,7 @@ app.use(cors({
   }
 })); 
    
- app.use(cors(corsOptions)) 
+ app.use(cors(corsOptions))*/
 
 // This allows us to read the request body as JSON
 app.use(express.json());
