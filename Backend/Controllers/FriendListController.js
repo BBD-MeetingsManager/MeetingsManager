@@ -18,9 +18,9 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
         (error, result) => {
             if (error) next(error);
             else {
-                if (result.length !== 2) next({error: "Internal server error"});
+                if (result.length !== 2) response.send({success: "success"});
                 else {
-                    const targetUser = result.find(user => user.email === targetEmail)
+                    const targetUser = result.find(user => user.email === targetEmail);
                     const senderUser = result.find(user => user.email === senderEmail);
 
                     // Find if you already have a request going
@@ -31,7 +31,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                     (targetUserID = ? and senderUserID = ?) or
                                     (senderUserID = ? and targetUserID = ?);
                         `,
-                        [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
+                        [targetUser.userID, senderUser.userID, targetUser.userID, senderUser.userID],
                         (error, result) => {
                             if (error) next(error);
                             else {
@@ -43,7 +43,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                         [targetUser.userID, senderUser.userID],
                                         (error, result) => {
                                             if (error) next(error);
-                                            else response.send(result);
+                                            else response.send({success: "success"});
                                         }
                                     )
                                 }
@@ -56,10 +56,10 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                         where 
                                             (targetUserID = ? and senderUserID = ?) or
                                             (senderUserID = ? and targetUserID = ?)`,
-                                        [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
+                                        [targetUser.userID, senderUser.userID, targetUser.userID, senderUser.userID],
                                         (error, result) => {
                                             if (error) next(error);
-                                            else response.send(result);
+                                            else response.send({success: "success"});
                                         }
                                     )
                                 }
@@ -86,7 +86,7 @@ router.put('/handleRequest', verifyToken, (request, response, next) => {
             (error, result) => {
                 if (error) next(error);
                 else {
-                    if (result.length !== 2) next({error: "Internal server error"});
+                    if (result.length !== 2) response.send({success: "success"});
                     else {
                         const targetUser = result.find(user => user.email === targetEmail)
                         const senderUser = result.find(user => user.email === senderEmail);
@@ -99,7 +99,7 @@ router.put('/handleRequest', verifyToken, (request, response, next) => {
                             [status, targetUser.userID, senderUser.userID],
                             (error, result) => {
                                 if (error) next(error);
-                                else response.send(result);
+                                else response.send({success: "success"});
                             }
                         )
                     }
