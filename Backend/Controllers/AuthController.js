@@ -20,6 +20,7 @@ router.get('/getAccessToken', async (request, response, next) => {
     queryParameters.append("client_id", clientID);
     queryParameters.append("code", code);
     queryParameters.append("redirect_uri", encodeURI(redirect));
+    queryParameters.append("redirect_uri", encodeURI('https://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com/redirect'));
     queryParameters.append("client_secret", clientSecret);
 
     url.search = queryParameters.toString();
