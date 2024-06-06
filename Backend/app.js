@@ -12,6 +12,9 @@ const express = require("express");
 const cors = require('cors');
 const app = express();
 
+
+app.use(cors());
+
 /*const allowedOrigins = ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net', 'https://meeting-manager.auth.eu-west-1.amazoncognito.com'];
 
 app.use(cors({
