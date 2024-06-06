@@ -47,8 +47,11 @@ To set up the project on your local machine, follow these steps:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/BBD-MeetingsManager/MeetingsManager.git
+   ```
+   ```bash
    cd MeetingManager/frontend
    ```
+   
 2. **Install dependencies:**
 
 ```bash
