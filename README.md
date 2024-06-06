@@ -54,17 +54,17 @@ To set up the project on your local machine, follow these steps:
    
 2. **Install dependencies:**
 
-```bash
-yarn
-```
+  ```bash
+  yarn
+  ```
 
 ### Running the app
 
 To run the application in development mode, use the following command:
 
-```bash
-yarn dev
-```
+  ```bash
+  yarn dev
+  ```
 
 This will start the development server and open the app in your default web browser. If it doesn't, you can manually open http://localhost:5173 to view it.
 
