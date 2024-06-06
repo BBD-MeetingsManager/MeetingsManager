@@ -130,7 +130,7 @@ const NavbarUser = () => {
                 </Button>
 
                 <Modal open={modalOpen} onClose={() => setModalOpen(false)} disableAutoFocus className="absolute flex items-center justify-center">
-                    <FormGroup className="md:w-7/12 w-11/12 h-fit items-center bg-anti-flash-white p-8 rounded-3xl">
+                    <FormGroup className="md:w-7/12 w-11/12 h-fit items-center bg-mint_cream p-8 rounded-3xl">
                         <h3 className="text-3xl">Edit Username</h3>
                         <form onSubmit={formik.handleSubmit} className="md:w-8/12 w-full justify-center">
                             <Stack direction={'column'} className="flex flex-col gap-4 p-8">

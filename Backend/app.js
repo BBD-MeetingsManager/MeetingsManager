@@ -39,6 +39,5 @@ app.use((error, request, response, next) => {
 });
 
 console.log(
-    'App listening on: ',
-    'http://localhost:8080/')
+    'App listening on: 8080')
 app.listen(8080);

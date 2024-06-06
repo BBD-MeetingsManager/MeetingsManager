@@ -25,7 +25,7 @@ const MeetingDetails = (props: MeetingDetailsProps) => {
       disableAutoFocus
       className="absolute flex items-center justify-center"
     >
-      <section className="relative md:w-5/12 w-11/12 h-fit flex flex-col bg-anti-flash-white rounded-3xl p-8 space-y-2 text-base">
+      <section className="relative md:w-5/12 w-11/12 h-fit flex flex-col bg-mint_cream rounded-3xl p-8 space-y-2 text-base">
         <Close className="absolute right-5 top-5 cursor-pointer" onClick={props.onClose} />
         <h5 className="text-2xl font-thin self-center">Meeting details</h5>
         <h6 className="text-xl py-2">{props.meeting.title}</h6>
@@ -33,14 +33,12 @@ const MeetingDetails = (props: MeetingDetailsProps) => {
         <a href="" className="text-sm hover:underline">
           {props.meeting.link}
         </a>
-        <p>guests</p>
         <p>{dayjs(props.meeting.startTime).format('DD-MM-YYYY').toString()}</p>
 
         <div className="self-center pt-4 w-full flex justify-center">
           <Button variant="outlined" onClick={handleCancel}>
             Cancel Meeting
           </Button>
-          {/* <Button variant="contained">Update Meeting</Button> */}
         </div>
       </section>
     </Modal>

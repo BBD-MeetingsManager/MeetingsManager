@@ -14,7 +14,7 @@ const ToastComponent = (props: ToastProps) => {
       open={props.open}
       onClose={props.onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      className="bg-paynes-gray-900 mt-14 rounded-md px-4 py-2"
+      className="bg-charcoal-900 mt-14 rounded-md px-4 py-2"
     >
       <p>{props.message}</p>
     </Snackbar>

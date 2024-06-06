@@ -27,6 +27,11 @@ jobs:
         env: 
           PHOST: ${{ secrets.PHOST }}
 
+      - name: create dir for frontend
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'rm -f -r frontend && mkdir frontend && mkdir frontend/dist'
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
       - name: transfer api
         run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r Backend/* $PHOST:/home/ubuntu/Backend
         env: 
@@ -37,7 +42,30 @@ jobs:
         env: 
           PHOST: ${{ secrets.PHOST }}
 
+      - name: build frontend
+        run: cd frontend && npm install && npm run build
+
+      - name: transfer frontend
+        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r frontend/dist/* $PHOST:/home/ubuntu/frontend/dist
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
+      - name: transfer frontendServerProxy
+        run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r frontendServerProxy/* $PHOST:/home/ubuntu/frontend
+        env: 
+          PHOST: ${{ secrets.PHOST }}      
+
+      - name: install dep for frontendServerProxy
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'cd frontend && npm install'
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
       - name: run backend
         run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup node Backend/app.js > /dev/null 2>&1 &'
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
+      - name: run frontend
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup node frontend/server.js > /dev/null 2>&1 &'
         env: 
           PHOST: ${{ secrets.PHOST }}
