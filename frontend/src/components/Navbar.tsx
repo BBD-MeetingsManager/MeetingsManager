@@ -1,4 +1,4 @@
-import {CalendarMonth, Edit, Groups, Menu} from '@mui/icons-material';
+import {CalendarMonth, Groups, Menu} from '@mui/icons-material';
 import { Box, AppBar, Toolbar, IconButton, Typography, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import './Navbar.css';
@@ -9,13 +9,11 @@ import NavbarSocial from './NavbarSocial.tsx';
 import { NavbarProps } from '../enums/types.tsx';
 
 const Navbar = (props: NavbarProps) => {
-  const [getMeetingInvitesCount, setGetMeetingInvitesCount] = useState<number>(0);
+    const [getMeetingInvitesCount, setGetMeetingInvitesCount] = useState<number>(0);
 
   const hostedUiURL = 'https://meeting-manager.auth.eu-west-1.amazoncognito.com';
   const clientID = '5hv4ev8ff59uqven58ifeddtom';
   const scopes = 'email openid phone';
-  const redirectUriLogIn = 'https://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com/redirect';
-  const redirectUriSignOut = 'https://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com/sign-out';
 
   const isLoggedIn = localStorage.getItem('id_token') != null;
 
@@ -27,7 +25,7 @@ const Navbar = (props: NavbarProps) => {
       queryParams.append('client_id', clientID);
       queryParams.append('response_type', 'code');
       queryParams.append('scope', scopes);
-      queryParams.append('redirect_uri', paths.redirectLogIn);
+      queryParams.append('redirect_uri', `${window.location.origin}${paths.redirect}`);
       url.search = queryParams.toString();
 
       window.location.href = url.toString();
@@ -38,7 +36,7 @@ const Navbar = (props: NavbarProps) => {
     const url = new URL(`${hostedUiURL}/logout`);
     const queryParams = new URLSearchParams();
     queryParams.append('client_id', clientID);
-    queryParams.append('logout_uri', paths.redirectSignOut);
+    queryParams.append('logout_uri', `${window.location.origin}${paths.signOut}`);
     url.search = queryParams.toString();
 
     window.location.href = url.toString();
