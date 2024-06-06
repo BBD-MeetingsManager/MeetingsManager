@@ -71,18 +71,22 @@ const Navbar = (props: NavbarProps) => {
                         const tmpMeetings = [];
 
                         if (meetings.hasOwnProperty('alert')) {
-                            for (const meeting of meetings) {
-                                tmpMeetings.push(<MeetingInvite
-                                    meetingID={meeting.meetingID}
-                                    title={meeting.title}
-                                    description={meeting.description}
-                                    startTime={meeting.startTime}
-                                    endTime={meeting.endTime}
-                                    updateInvites={() => {
-                                        setGetMeetingInvitesCount(prevState => prevState + 1);
-                                        props.updateStateFunction();
-                                    }}
-                                />)
+                            if (Array.isArray(meetings)){
+                                for (const meeting of meetings) {
+                                    tmpMeetings.push(
+                                        <MeetingInvite
+                                            meetingID={meeting.meetingID}
+                                            title={meeting.title}
+                                            description={meeting.description}
+                                            startTime={meeting.startTime}
+                                            endTime={meeting.endTime}
+                                            updateInvites={() => {
+                                                setGetMeetingInvitesCount(prevState => prevState + 1);
+                                                props.updateStateFunction();
+                                            }}
+                                        />
+                                    );
+                                }
                             }
                         }
 
