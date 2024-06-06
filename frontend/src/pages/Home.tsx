@@ -1,4 +1,4 @@
-import { List, ListItemText, Typography } from '@mui/material';
+import { CircularProgress, List, ListItemText, Typography } from '@mui/material';
 import { CalendarComponent } from '../components/CalendarComponent';
 import { paths } from '../enums/paths';
 import { format } from 'date-fns';
@@ -17,7 +17,7 @@ const Home = () => {
   }, [navigate]);
 
   const [getUpcomingMeetingsCount, setGetUpcomingMeetingsCount] = useState<number>(0);
-  const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>([]);
+  const [upcomingMeetings, setUpcomingMeetings] = useState<JSX.Element[]>();
 
   useEffect(() => {
     if (!localStorage.getItem('id_token')) {
@@ -56,7 +56,7 @@ const Home = () => {
                     {` — ${meeting.description || ''} ...`}
                   </>
                 }
-                className="bg-paynes-gray-700/50 rounded-md p-4 shadow-md"
+                className="bg-charcoal-700/50 rounded-md p-4 shadow-md"
               />
             );
           }
@@ -70,13 +70,21 @@ const Home = () => {
   return (
     <div>
       <Navbar
-          updateStateFunction={() => {setGetUpcomingMeetingsCount(prevState => prevState + 1)}}
+        updateStateFunction={() => {
+          setGetUpcomingMeetingsCount((prevState) => prevState + 1);
+        }}
       />
-      <main className="w-full h-screen pt-16 bg-anti-flash-white">
-        <section className="w-full grid grid-cols-2 gap-4 p-8">
-          <section className="w-10/12 h-full p-4 bg-paynes-gray-700/30 rounded-xl shadow-xl">
+      <main className="w-full min-h-screen pt-16 bg-mint_cream">
+        <section className="w-full flex md:flex-row flex-col gap-4 p-8">
+          <section className="w-full h-full p-4 bg-charcoal-700/30 rounded-xl shadow-xl">
             <h6 className="text-2xl">Upcoming meetings</h6>
-            <List className="gap-2">{upcomingMeetings}</List>
+            {upcomingMeetings ? (
+              <List className="gap-2">{upcomingMeetings}</List>
+            ) : (
+              <div className="w-full flex justify-center items-center">
+                <CircularProgress />
+              </div>
+            )}
           </section>
           <section className="w-full">
             <CalendarComponent updateTrigger={getUpcomingMeetingsCount} />
