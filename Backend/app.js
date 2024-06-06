@@ -12,8 +12,12 @@ const express = require("express");
 const cors = require('cors');
 const app = express();
 
-// Todo, Some cors stuff later
-app.use(cors());
+// enabling CORS for some specific origins only. 
+let corsOptions = { 
+    origin : ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net']
+ } 
+   
+ app.use(cors(corsOptions)) 
 
 // This allows us to read the request body as JSON
 app.use(express.json());
