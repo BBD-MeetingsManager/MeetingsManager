@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "npm run build"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node": "^18.20.3"
+  }
+}

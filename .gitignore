@@ -13,3 +13,6 @@ Terraform/terraform.tfstate.backup
 Keys
 
 node_modules
+package-lock.json
+
+yarn.lock
