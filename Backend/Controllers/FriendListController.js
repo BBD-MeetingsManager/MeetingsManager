@@ -31,7 +31,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                     (targetUserID = ? and senderUserID = ?) or
                                     (senderUserID = ? and targetUserID = ?);
                         `,
-                        [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
+                        [targetUser.userID, senderUser.userID, targetUser.userID, senderUser.userID],
                         (error, result) => {
                             if (error) response.send({success: "Success"});
                             else {
@@ -56,7 +56,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
                                         where 
                                             (targetUserID = ? and senderUserID = ?) or
                                             (senderUserID = ? and targetUserID = ?)`,
-                                        [targetUser.userID, senderUser.userID, senderUser.userID, targetUser.userID],
+                                        [targetUser.userID, senderUser.userID, targetUser.userID, senderUser.userID],
                                         (error, result) => {
                                             response.send({success: "Success"});
                                         }

@@ -10,8 +10,7 @@ const Redirect = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
 
-        //fetch(`${paths.apiUrlLocal}/auth/getAccessToken?code=${code}`)
-        fetch(`ec2-34-248-128-133.eu-west-1.compute.amazonaws.com/auth/getAccessToken?code=${code}`)
+        fetch(`${paths.ec2InstanceLocal}/auth/getAccessToken?code=${code}`)
             .then((result) => {
                 result.json()
                     .then(((response) => {
