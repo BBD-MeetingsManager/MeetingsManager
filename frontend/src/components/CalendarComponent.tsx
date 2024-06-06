@@ -440,8 +440,8 @@ export const CalendarComponent = (props: CalendarComponentProps) => {
                   <TimePicker
                     label="From"
                     name="from"
-                    value={formik.values.from}
-                    onChange={formik.handleChange}
+                    value={formik.values.from || dayjs()}
+                    onChange={(value) => formik.setFieldValue('from', value, true)}
                     timezone={'system'}
                     viewRenderers={{
                       hours: renderTimeViewClock,
@@ -451,8 +451,8 @@ export const CalendarComponent = (props: CalendarComponentProps) => {
                   <TimePicker
                     label="To"
                     name="to"
-                    value={formik.values.to}
-                    onChange={formik.handleChange}
+                    value={formik.values.to || dayjs()}
+                    onChange={(value) => formik.setFieldValue('to', value, true)}
                     timezone={'system'}
                     viewRenderers={{
                       hours: renderTimeViewClock,

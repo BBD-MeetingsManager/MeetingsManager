@@ -73,6 +73,7 @@ const Navbar = (props: NavbarProps) => {
           for (const meeting of meetings) {
             tmpMeetings.push(
               <MeetingInvite
+                key={meeting.title}
                 meetingID={meeting.meetingID}
                 title={meeting.title}
                 description={meeting.description}
