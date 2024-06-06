@@ -13,21 +13,19 @@ const cors = require('cors');
 const app = express();
 
 
-app.use(cors());
+const allowedOrigins = ['https://d1lqgsjp7egbpp.cloudfront.net']; 
 
-/*const allowedOrigins = ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net', 'https://meeting-manager.auth.eu-west-1.amazoncognito.com'];
-
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   }
-})); 
-   
- app.use(cors(corsOptions))*/
+};
+
+app.use(cors(corsOptions));
 
 // This allows us to read the request body as JSON
 app.use(express.json());
