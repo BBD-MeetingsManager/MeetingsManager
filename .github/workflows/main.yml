@@ -27,6 +27,11 @@ jobs:
         env: 
           PHOST: ${{ secrets.PHOST }}
 
+      - name: create dir for frontend
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'rm -f -r frontend && mkdir frontend && mkdir frontend/dist'
+        env: 
+          PHOST: ${{ secrets.PHOST }}
+
       - name: transfer api
         run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r Backend/* $PHOST:/home/ubuntu/Backend
         env: 
@@ -37,13 +42,8 @@ jobs:
         env: 
           PHOST: ${{ secrets.PHOST }}
 
-      - name: create dir for frontend
-        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'rm -f -r Backend && mkdir Backend'
-        env: 
-          PHOST: ${{ secrets.PHOST }}
-
       - name: build frontend
-        run: cd frontend && npm run build
+        run: cd frontend && npm install && npm run build
 
       - name: transfer frontend
         run: sudo scp -i pkey.pem -o StrictHostKeychecking=no -r frontend/dist/* $PHOST:/home/ubuntu/frontend/dist
