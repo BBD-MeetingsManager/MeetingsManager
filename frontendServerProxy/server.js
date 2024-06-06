@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const PORT = process.env.PORT || 5173;
+const PORT = 443;
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
