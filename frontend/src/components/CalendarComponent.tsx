@@ -238,6 +238,7 @@ export const CalendarComponent = (props: CalendarComponentProps) => {
 
       fetch(url.toString(), options).then((result) =>
         result.json().then((asJson) => {
+          console.log(asJson);
           handleClose();
           setGetUpcomingMeetingsCount((prevState) => prevState + 1);
         })
