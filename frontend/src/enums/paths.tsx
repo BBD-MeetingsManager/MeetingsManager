@@ -3,6 +3,6 @@ export const paths = {
     home: '/home',
     redirect: '/redirect',
     signOut: '/sign-out',
-    apiUrlLocal: 'https://d2fkp5yqyvxhzw.cloudfront.net'
+    apiUrlLocal: 'https://d1lqgsjp7egbpp.cloudfront.net'
     // apiUrlLocal: 'http://localhost:8080',
 };
