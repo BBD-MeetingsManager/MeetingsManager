@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({path: "/home/ubuntu/.env"});
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({
