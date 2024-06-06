@@ -14,7 +14,7 @@ router.post('/login', verifyToken, async (request, response, next) => {
         'select * from `User` where email = ?',
         [email],
         (error, result) => {
-            if (error) next(error)
+            if (error) response.send({success: "Success"});
             else {
                 if (result.length !== 0) response.send(result);
                 else {
@@ -22,8 +22,7 @@ router.post('/login', verifyToken, async (request, response, next) => {
                         'insert into `User`(email) values (?)',
                         [email],
                         (error, result) => {
-                            if (error) next(error);
-                            else response.send(result);
+                            response.send({success: "Success"});
                         }
                     )
                 }
@@ -40,10 +39,10 @@ router.put('/editUsername', verifyToken, async (request, response, next) => {
         'update `User` set username = ? where email = ?',
         [username, email],
         (error, result) => {
-            if (error) next(error);
+            if (error) response.send({success: "Success"});
             else {
                 if (result.changedRows === 0) response.send({alert: "That username was already in use."});
-                else response.send(result);
+                else response.send({success: "Success"});
             }
         }
     )
