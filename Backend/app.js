@@ -12,10 +12,17 @@ const express = require("express");
 const cors = require('cors');
 const app = express();
 
-// enabling CORS for some specific origins only. 
-let corsOptions = { 
-    origin : ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net']
- } 
+const allowedOrigins = ['http://localhost', 'https://d1lqgsjp7egbpp.cloudfront.net'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+})); 
    
  app.use(cors(corsOptions)) 
 
