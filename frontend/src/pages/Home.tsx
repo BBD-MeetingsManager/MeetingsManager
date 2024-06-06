@@ -76,7 +76,7 @@ const Home = () => {
       />
       <main className="w-full min-h-screen pt-16 bg-mint_cream">
         <section className="w-full flex md:flex-row flex-col gap-4 p-8">
-          <section className="w-full h-full p-4 bg-charcoal-700/30 rounded-xl shadow-xl">
+          <section className="w-full h-[80vh] overflow-y-auto p-4 bg-charcoal-700/30 rounded-xl shadow-xl">
             <h6 className="text-2xl">Upcoming meetings</h6>
             {upcomingMeetings ? (
               <List className="gap-2">{upcomingMeetings}</List>

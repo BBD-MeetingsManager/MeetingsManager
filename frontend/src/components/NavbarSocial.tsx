@@ -97,13 +97,15 @@ const NavbarSocial = () => {
           for (const friend of friends) {
             tmpFriends.push(
               <div key={`friend-${friend.email}`} style={{ border: '1px solid black' }}>
-                <p>{`From: ${friend.email}`}</p>
-                <button onClick={() => handleFriendRequest(true, friend.email)} type="button">
+                <p className='text-base font-thin'>{`From: ${friend.email}`}</p>
+                <div className='flex flex-row gap-1 py-2'>
+                <Button size='small' variant='outlined' onClick={() => handleFriendRequest(true, friend.email)} type="button">
                   Reject
-                </button>
-                <button onClick={() => handleFriendRequest(false, friend.email)} type="button">
+                </Button>
+                <Button size='small' variant='contained' onClick={() => handleFriendRequest(false, friend.email)} type="button">
                   Accept
-                </button>
+                </Button>
+                </div>
               </div>
             );
           }
@@ -125,7 +127,7 @@ const NavbarSocial = () => {
           Social
         </Button>
 
-        <div className="dropdown-content">{friendInvites}</div>
+        <div className="dropdown-content text-charcoal-100">{friendInvites}</div>
       </div>
       <Modal
         open={modalOpen}
