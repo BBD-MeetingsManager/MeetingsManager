@@ -3,6 +3,6 @@ export const paths = {
     home: '/home',
     redirect: '/redirect',
     signOut: '/sign-out',
-    apiUrlLocal: 'https://d6pyb39arwcpu.cloudfront.net'
+    apiUrlLocal: 'https://levelup-2024.xyz/8443'
     // apiUrlLocal: 'http://localhost:8080',
 };
