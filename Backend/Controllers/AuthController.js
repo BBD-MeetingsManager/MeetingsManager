@@ -15,6 +15,12 @@ router.get('/getAccessToken', async (request, response, next) => {
     if (host.includes('localhost')) redirect = `${request.protocol}://localhost:5173/redirect`;
     else redirect = `${request.protocol}://${host}/redirect`;
 
+    console.log(redirect);
+    console.log(clientID);
+    console.log(clientSecret);
+    console.log(encodeURI(redirect));
+    console.log(code);
+
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
     const url = new URL(`${hostedUiURL}/oauth2/token`);
 
