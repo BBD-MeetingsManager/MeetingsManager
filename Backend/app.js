@@ -8,6 +8,9 @@ const friendList = require('./Controllers/FriendListController');
 const complexCalls = require('./Controllers/ComplexController');
 const auth = require('./Controllers/AuthController');
 
+const https = require('https');
+const fs = require('fs');
+
 const express = require("express");
 const cors = require('cors');
 const app = express();
@@ -53,7 +56,7 @@ app.use((error, request, response, next) => {
 });
 
 const httpsServer = https.createServer({
-  key: fs.readFileSync(' /etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/fullchain.pem'),
 }, app);
 
