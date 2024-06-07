@@ -15,7 +15,7 @@ router.get('/getAccessToken', async (request, response, next) => {
     if (host.includes('localhost')) redirect = `${request.protocol}://localhost:5173/redirect`;
     else redirect = `${request.protocol}://${host}/redirect`;
 
-    redirect = 'https://levelup-2024.xyz:443/redirect';
+    redirect = 'https://levelup-2024.xyz/redirect';
 
     console.log(redirect);
     console.log(clientID);
