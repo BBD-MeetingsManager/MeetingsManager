@@ -13,11 +13,7 @@ router.get('/getAccessToken', async (request, response, next) => {
 
     let redirect;
     if (host.includes('localhost')) redirect = `${request.protocol}://localhost:5173/redirect`;
-    else redirect = `${request.protocol}://${host}/redirect`;
-
-    //redirect = 'https://levelup-2024.xyz/redirect';
-
-    console.log(`${host}`);
+    else redirect = 'https://levelup-2024.xyz/redirect';
 
     const hostedUiURL = "https://meeting-manager.auth.eu-west-1.amazoncognito.com";
     const url = new URL(`${hostedUiURL}/oauth2/token`);
