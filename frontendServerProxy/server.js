@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'dist')));
 
 const httpsServer = https.createServer({
-  key: fs.readFileSync(' /etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/fullchain.pem'),
 }, app);
 
