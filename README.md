@@ -1,9 +1,5 @@
 # MeetingsManager
 
-## Postman
-
-Use this [link](https://app.getpostman.com/join-team?invite_code=86fbcfb0462f951fd07fc3fa07a28b6b&target_code=6d568224b2cbf7d42168ae268cade424) to join the postman workspace. Please do not destroy. Use this for testing.
-
 ## Backend
 
 In VSCode, (I havent tested yet!), you can run with: `node app.js` in the back end folder.  
