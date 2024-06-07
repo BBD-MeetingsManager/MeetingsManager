@@ -55,11 +55,19 @@ app.use((error, request, response, next) => {
     response.status(error.status || 500).send({error: error.message || error || 'Internal Server Error'});
 });
 
-const httpsServer = https.createServer({
+/*const httpsServer = https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/fullchain.pem'),
 }, app);
 
 httpsServer.listen(8443, () => {
     console.log('HTTPS Server running on port 8443');
+});*/
+
+app.use((error, request, response, next) => {
+  response.status(error.status || 500).send(error.message || 'error');
 });
+
+console.log(
+  'App listening on: 8080')
+app.listen(8080);
