@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const https = require('https');
+const fs = require('fs');
 
 app.use((req, res, next) => {
     if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
@@ -15,9 +17,11 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const PORT = process.env.PORT || 5173;
+const httpsServer = https.createServer({
+  key: fs.readFileSync(' /etc/letsencrypt/live/levelup-2024.xyz/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/levelup-2024.xyz/fullchain.pem'),
+}, app);
 
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
-    console.log('Press Ctrl+C to quit.');
+httpsServer.listen(443, () => {
+    console.log('HTTPS Server running on port 443');
 });
