@@ -1,4 +1,5 @@
 const verifyToken = require('../VerifyToken');
+const limitRate = require('../RateLimit');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
@@ -49,7 +50,7 @@ router.put('/editUsername', verifyToken, async (request, response, next) => {
 });
 
 // Get username and email
-router.get('/getMyDetails', verifyToken, async (request, response, next) => {
+router.get('/getMyDetails', verifyToken, limitRate(1), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(`
             select email, username
