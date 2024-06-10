@@ -59,6 +59,10 @@ const Home = () => {
                 className="bg-charcoal-700/50 rounded-md p-4 shadow-md"
               />
             );
+
+            if (tmpMeetings.length >= 5) {
+              break;
+            }
           }
 
           setUpcomingMeetings(tmpMeetings);
