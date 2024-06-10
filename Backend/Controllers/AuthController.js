@@ -1,3 +1,4 @@
+const limitRate = require('../RateLimit');
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
@@ -6,7 +7,7 @@ const clientID = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 
 // Get Access token
-router.get('/getAccessToken', async (request, response, next) => {
+router.get('/getAccessToken', limitRate(100), async (request, response, next) => {
     const {code} = request.query;
 
     const host = request.get('host');

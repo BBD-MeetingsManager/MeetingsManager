@@ -9,7 +9,7 @@ router.get('/', (request, response) => {
 });
 
 // Login / Sign Up
-router.post('/login', verifyToken, async (request, response, next) => {
+router.post('/login', verifyToken, limitRate(10), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(
         'select * from `User` where email = ?',
@@ -33,7 +33,7 @@ router.post('/login', verifyToken, async (request, response, next) => {
 });
 
 // Edit your username
-router.put('/editUsername', verifyToken, async (request, response, next) => {
+router.put('/editUsername', verifyToken, limitRate(5), async (request, response, next) => {
     const {username} = request.body;
     const email = request.user.email;
     dbContext.query(
@@ -50,7 +50,7 @@ router.put('/editUsername', verifyToken, async (request, response, next) => {
 });
 
 // Get username and email
-router.get('/getMyDetails', verifyToken, limitRate(1), async (request, response, next) => {
+router.get('/getMyDetails', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(`
             select email, username

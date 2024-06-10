@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { parse, isValid } = require('date-fns');
+const limitRate = require('../RateLimit');
 
 const verifyToken = require('../VerifyToken');
 const express = require('express');
@@ -7,7 +8,7 @@ const router = express.Router();
 const dbContext = require('../dataSource');
 
 // Get meetings for user.
-router.get('/getMeetings', verifyToken, async (request, response, next) => {
+router.get('/getMeetings', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(
         `
@@ -40,7 +41,7 @@ router.get('/getMeetings', verifyToken, async (request, response, next) => {
 });
 
 // Get meeting invites for user.
-router.get('/pendingMeetings', verifyToken, async (request, response, next) => {
+router.get('/pendingMeetings', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(
         `
@@ -72,7 +73,7 @@ router.get('/pendingMeetings', verifyToken, async (request, response, next) => {
 });
 
 // Create Meeting
-router.post('/createMeeting', verifyToken, async (request, response, next) => {
+router.post('/createMeeting', verifyToken, limitRate(5), async (request, response, next) => {
     const {title, description, link, startTime, endTime, members} = request.body;
     const email = request.user.email;
     members.push(email);
@@ -162,7 +163,7 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
 });
 
 // Get users friends
-router.get('/getFriendsForUser', verifyToken, async (request, response, next) => {
+router.get('/getFriendsForUser', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(`
             select 
@@ -197,7 +198,7 @@ router.get('/getFriendsForUser', verifyToken, async (request, response, next) =>
 });
 
 // Get user's friend requests
-router.get('/getFriendRequests', verifyToken, async (request, response, next) => {
+router.get('/getFriendRequests', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     dbContext.query(`
             select 
@@ -229,7 +230,7 @@ router.get('/getFriendRequests', verifyToken, async (request, response, next) =>
     )
 });
 
-router.get('/getMeetingDetails', verifyToken, async (request, response, next) => {
+router.get('/getMeetingDetails', verifyToken, limitRate(100), async (request, response, next) => {
     const email = request.user.email;
     const {meetingID} = request.query;
 

@@ -2,6 +2,7 @@ const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
+const limitRate = require("../RateLimit");
 
 router.get('/', (request, response) => {
     response.send('Meeting Homepage');
@@ -9,7 +10,7 @@ router.get('/', (request, response) => {
 
 // Todo, add extended functionality that if you send a request and they sent one to you, it must just accept the request.
 // Make follow request
-router.post('/makeRequest', verifyToken, async (request, response, next) => {
+router.post('/makeRequest', verifyToken, limitRate(5), async (request, response, next) => {
     const {targetEmail} = request.body;
     const senderEmail = request.user.email;
     dbContext.query(
@@ -74,7 +75,7 @@ router.post('/makeRequest', verifyToken, async (request, response, next) => {
 
 // Todo, out how to send better response to front end without exposing information
 // Accept / reject friend requests
-router.put('/handleRequest', verifyToken, (request, response, next) => {
+router.put('/handleRequest', verifyToken, limitRate(5), (request, response, next) => {
     const {senderEmail, status} = request.body;
     const targetEmail = request.user.email;
     if (status !== 'accepted' && status !== 'rejected') response.send({alert: "Invalid status. Only \'accepted\' or \'rejected\' are allowed."});

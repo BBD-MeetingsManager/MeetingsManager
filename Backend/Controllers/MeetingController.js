@@ -2,13 +2,14 @@ const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
+const limitRate = require("../RateLimit");
 
 router.get('/', (request, response) => {
     response.send('Meeting Homepage');
 });
 
 // Cancel meeting
-router.put('/cancelMeeting', verifyToken, async (request, response, next) => {
+router.put('/cancelMeeting', verifyToken, limitRate(5), async (request, response, next) => {
     const {meetingID} = request.body;
     const email = request.user.email;
     dbContext.query(`

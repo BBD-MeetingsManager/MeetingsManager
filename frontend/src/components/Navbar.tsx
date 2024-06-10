@@ -5,7 +5,6 @@ import './Navbar.css';
 import MeetingInvite from './MeetingInvite.tsx';
 import { paths } from '../enums/paths.tsx';
 import NavbarUser from './NavbarUser.tsx';
-import NavbarSocial from './NavbarSocial.tsx';
 import { NavbarProps } from '../enums/types.tsx';
 
 const Navbar = (props: NavbarProps) => {
@@ -113,7 +112,6 @@ const Navbar = (props: NavbarProps) => {
             {isLoggedIn && (
               <section className="flex flex-row gap-4 items-center justify-end ">
                 <NavbarUser />
-                <NavbarSocial />
                 <div className="dropdown">
                   <Button
                       className="dropbtn"
@@ -138,7 +136,6 @@ const Navbar = (props: NavbarProps) => {
                 {isLoggedIn && (
                   <section className="flex flex-col items-center justify-end ">
                     <NavbarUser />
-                    <NavbarSocial />
                     <div className="dropdown">
                       <button className="dropbtn">Dropdown</button>
                       <div className="dropdown-content text-charcoal-100">{meetingInvites}</div>

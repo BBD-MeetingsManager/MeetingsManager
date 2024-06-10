@@ -2,6 +2,7 @@ const verifyToken = require('../VerifyToken');
 const express = require('express');
 const router = express.Router();
 const dbContext = require('../dataSource');
+const limitRate = require("../RateLimit");
 
 router.get('/', (request, response) => {
     response.send('MeetingMembers Homepage');
@@ -10,7 +11,7 @@ router.get('/', (request, response) => {
 
 // Todo, out how to send better response to front end without exposing information
 // Accept / reject meeting invites
-router.put('/handleRequest', verifyToken, (request, response, next) => {
+router.put('/handleRequest', verifyToken, limitRate(5), (request, response, next) => {
     const {meetingID, status} = request.body;
     const email = request.user.email;
     if (status !== 'accepted' && status !== 'rejected') response.send({alert: "Invalid status. Only \'accepted\' or \'rejected\' are allowed."});
