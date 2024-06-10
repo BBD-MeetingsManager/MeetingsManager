@@ -26,7 +26,9 @@ router.get('/getMeetings', verifyToken, async (request, response, next) => {
               mm.status = 'accepted' and
               u.email = ?
             order by
-                m.startTime;
+                m.startTime
+            limit
+                10;
         `,
         [email],
         (error, result) => {
