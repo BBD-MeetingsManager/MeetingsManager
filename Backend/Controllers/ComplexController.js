@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const { parse, isValid } = require('date-fns');
 
 const verifyToken = require('../VerifyToken');
@@ -93,7 +94,7 @@ router.post('/createMeeting', verifyToken, async (request, response, next) => {
                 if (error) response.send({success: "Success"});
                 else {
                     const adminUserID = result[0].userID;
-                    const meetingUUID = crypto.randomUUID();
+                    const meetingUUID = uuidv4();
                     dbContext.query(
                         `
                             insert into 
