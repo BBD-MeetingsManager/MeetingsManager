@@ -27,8 +27,7 @@ router.get('/getMeetings', verifyToken, async (request, response, next) => {
               u.email = ?
             order by
                 m.startTime
-            limit
-                5;
+            LIMIT 5;
         `,
         [email],
         (error, result) => {
