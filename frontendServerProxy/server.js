@@ -5,15 +5,15 @@ const https = require('https');
 const fs = require('fs');
 
 app.use((req, res, next) => {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    res.header('X-Frame-Options', 'DENY');
+    res.header('Content-Security-Policy', 'frame-ancestors \'self\';');
+
     if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
         next();
     } else {
-        res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-        res.header('Expires', '-1');
-        res.header('Pragma', 'no-cache');
-        res.header('X-Frame-Options', 'DENY');
-        res.header('Content-Security-Policy', 'frame-ancestors \'self\';');
-
         res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     }
 });
