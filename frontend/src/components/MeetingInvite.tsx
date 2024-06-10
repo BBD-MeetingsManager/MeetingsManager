@@ -20,7 +20,7 @@ const MeetingInvite = (props: MeetingInviteType) => {
       }).toString(),
     };
 
-        fetch(url.toString(), options)
+        fetch(url, options)
             .then(result => result.json()
                 .then(asJson => {
                     console.log("response, meeting changed", asJson);

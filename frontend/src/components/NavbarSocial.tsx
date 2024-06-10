@@ -70,7 +70,7 @@ const NavbarSocial = () => {
       }).toString(),
     };
 
-    fetch(url.toString(), options).then((result) =>
+    fetch(url, options).then((result) =>
       result.json().then((asJson) => {
         console.log('response, friend request changed', asJson);
         setGetFriendRequestCount((prevState) => prevState + 1);

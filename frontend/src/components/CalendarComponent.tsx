@@ -236,7 +236,7 @@ export const CalendarComponent = (props: CalendarComponentProps) => {
         }).toString(),
       };
 
-      fetch(url.toString(), options).then((result) =>
+      fetch(url, options).then((result) =>
         result.json().then((asJson) => {
           console.log(asJson);
           handleClose();
