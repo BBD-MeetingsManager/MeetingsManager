@@ -1,7 +1,7 @@
-const BASE_URL = 'http://ec2-34-248-128-133.eu-west-1.compute.amazonaws.com:8080';
+import {paths} from "../enums/paths.tsx";
 
 export const getMeetingDetails = async (meetingID: string) => {
-  const result = await fetch(`${BASE_URL}/complex/getMeetingDetails?meetingID=${meetingID}`, {
+  const result = await fetch(`${paths.apiUrlLocal}/complex/getMeetingDetails?meetingID=${meetingID}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('id_token')}`,
@@ -12,7 +12,7 @@ export const getMeetingDetails = async (meetingID: string) => {
 };
 
 export const cancelMeeting = async (meetingID: string) => {
-  const result = await fetch(`${BASE_URL}/meeting/cancelMeeting`, {
+  const result = await fetch(`${paths.apiUrlLocal}/meeting/cancelMeeting`, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('id_token')}`,
