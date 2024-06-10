@@ -1,9 +1,9 @@
 const rateLimit = require('express-rate-limit');
 
-function limitRate (noRequest = 10) {
+function limitRate (noRequest) {
     return rateLimit({
-        windowMs: 1000,
-        max: noRequest,
+        windowMs: 5000,
+        max: noRequest || 10,
         message: `You have exceeded ${noRequest} per second`
     });
 }
