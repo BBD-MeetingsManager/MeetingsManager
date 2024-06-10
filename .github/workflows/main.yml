@@ -60,8 +60,11 @@ jobs:
         env: 
           PHOST: ${{ secrets.PHOST }}
 
+      - name: Install PM2
+        run: sudo npm install pm2 -g
+
       - name: run backend
-        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup node Backend/app.js > /dev/null 2>&1 &'
+        run: sudo ssh -i pkey.pem -o StrictHostKeychecking=no $PHOST 'nohup pm2 start Backend/app.js > /dev/null 2>&1 &'
         env: 
           PHOST: ${{ secrets.PHOST }}
 
