@@ -137,7 +137,7 @@ const Navbar = (props: NavbarProps) => {
                   <section className="flex flex-col items-center justify-end ">
                     <NavbarUser />
                     <div className="dropdown">
-                      <button className="dropbtn">Dropdown</button>
+                      <button className="dropbtn">Meeting Invites</button>
                       <div className="dropdown-content text-charcoal-100">{meetingInvites}</div>
                     </div>
                   </section>
